@@ -1,0 +1,1595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vault – Creator Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07070d;--bg2:#0d0d16;--bg3:#13131c;--card:#181824;
+  --border:rgba(255,255,255,0.055);--border2:rgba(255,255,255,0.11);
+  --text:#eceef8;--text2:#8888a4;--text3:#4a4a68;
+  --accent:#a78bfa;--accent2:#8b5cf6;--accent3:#6d28d9;
+  --green:#10b981;--green2:#059669;--gbg:rgba(16,185,129,0.07);--gb:rgba(16,185,129,0.18);
+  --red:#ef4444;--rbg:rgba(239,68,68,0.07);--rb:rgba(239,68,68,0.18);
+  --amber:#f59e0b;--abg:rgba(245,158,11,0.07);--ab:rgba(245,158,11,0.18);
+  --blue:#3b82f6;--bbg:rgba(59,130,246,0.07);--bb:rgba(59,130,246,0.18);
+  --r:14px;--r2:9px;--r3:6px;--sw:232px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:2px}
+/* LOGIN */
+#login{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:200;padding:20px;overflow-y:auto}
+#login::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(109,40,217,0.14),transparent);pointer-events:none}
+.lw{width:100%;max-width:500px;position:relative;z-index:1;padding:20px 0}
+.ll{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;letter-spacing:-0.5px;background:linear-gradient(135deg,var(--accent) 30%,var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center;margin-bottom:4px}
+.lsub{text-align:center;color:var(--text2);font-size:13px;margin-bottom:20px}
+.lcard{background:var(--card);border:1px solid var(--border2);border-radius:20px;padding:24px;margin-bottom:12px}
+.lti{font-size:13px;font-weight:600;margin-bottom:14px;text-align:center;color:var(--text2)}
+.rg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.rb{padding:18px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;transition:all .18s;text-align:center;color:var(--text);font-family:'Inter',sans-serif}
+.rb:hover{border-color:var(--accent2);background:rgba(139,92,246,0.09);transform:translateY(-2px);box-shadow:0 8px 24px rgba(139,92,246,0.12)}
+.ri{font-size:24px;margin-bottom:7px;display:block}
+.rn{font-family:'Syne',sans-serif;font-size:12px;font-weight:700}
+.rs{font-size:10px;color:var(--text2);margin-top:3px}
+/* LANG PICKER */
+.lang-pick{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+.lbtn{padding:5px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;color:var(--text2);font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.lbtn:hover{border-color:var(--accent2);color:var(--text)}
+.lbtn.active{background:rgba(139,92,246,0.15);border-color:var(--accent2);color:var(--accent);font-weight:600}
+/* APP */
+#app{display:none;min-height:100vh}
+.sb{position:fixed;left:0;top:0;bottom:0;width:var(--sw);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:100;transition:transform .25s ease}
+.sbhd{padding:16px 14px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.sblo{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;letter-spacing:-0.3px;background:linear-gradient(135deg,var(--accent),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sbver{font-size:9px;color:var(--text3);padding:2px 6px;background:var(--bg3);border-radius:4px;border:1px solid var(--border)}
+.notif-btn{width:28px;height:28px;border-radius:var(--r3);background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;font-size:13px;transition:all .15s;flex-shrink:0}
+.notif-btn:hover{border-color:var(--accent2)}
+.nbadge{position:absolute;top:-4px;right:-4px;width:14px;height:14px;border-radius:50%;background:var(--red);font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center;color:white;border:2px solid var(--bg2)}
+.sbu{padding:10px 14px;display:flex;align-items:center;gap:9px;border-bottom:1px solid var(--border)}
+.av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;flex-shrink:0;background:linear-gradient(135deg,var(--accent3),var(--blue))}
+.un{font-size:12px;font-weight:600}.utag{font-size:10px;color:var(--text2)}
+.utier{font-size:9px;color:var(--accent);background:rgba(139,92,246,0.12);border-radius:4px;padding:1px 6px;margin-top:2px;display:inline-block}
+.nav{flex:1;padding:8px;overflow-y:auto}
+.nl{font-size:9px;font-weight:700;letter-spacing:1.1px;color:var(--text3);padding:10px 8px 3px;text-transform:uppercase}
+.ni{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--r3);cursor:pointer;font-size:12px;color:var(--text2);transition:all .12s;margin-bottom:1px;position:relative;user-select:none}
+.ni:hover{background:var(--bg3);color:var(--text)}
+.ni.active{background:rgba(139,92,246,0.11);color:var(--accent);font-weight:500}
+.ni.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:2px;height:14px;background:var(--accent);border-radius:0 2px 2px 0}
+.ndot{width:5px;height:5px;border-radius:50%;background:var(--green);margin-left:auto;flex-shrink:0}
+.ndot.p{background:var(--accent)}
+.sbft{padding:8px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:6px}
+.swb{width:100%;padding:8px;background:transparent;border:1px solid var(--border);border-radius:var(--r3);color:var(--text2);font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.swb:hover{border-color:var(--border2);color:var(--text)}
+.lang-sb{width:100%;padding:6px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r3);color:var(--text2);font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;outline:none}
+.main{margin-left:var(--sw);padding:28px;min-height:100vh}
+.view{display:none}.view.active{display:block;animation:fi .15s ease}
+@keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.tb{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;gap:10px;flex-wrap:wrap}
+.tl .pt{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;letter-spacing:-0.3px}
+.tl .ps{font-size:11px;color:var(--text2);margin-top:2px}
+.tr{display:flex;gap:6px;align-items:center}
+.btn{padding:7px 14px;border-radius:var(--r2);font-size:12px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;border:none;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.btn:active{transform:scale(0.97)}
+.btp{background:var(--accent2);color:white}.btp:hover{background:var(--accent3);box-shadow:0 4px 14px rgba(139,92,246,0.32)}
+.btg{background:transparent;border:1px solid var(--border2);color:var(--text2)}.btg:hover{border-color:var(--accent2);color:var(--accent)}
+.btd{background:var(--rbg);border:1px solid var(--rb);color:var(--red)}
+.bts{background:var(--gbg);border:1px solid var(--gb);color:var(--green)}
+.btsm{padding:5px 11px;font-size:11px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px;transition:border-color .15s}
+.card:hover{border-color:var(--border2)}
+.card.gp{background:linear-gradient(135deg,rgba(139,92,246,0.07),rgba(59,130,246,0.04));border-color:rgba(139,92,246,0.19)}
+.ct{font-size:12px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.cs{font-size:10px;font-weight:400;color:var(--text2)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.mb{margin-bottom:14px}
+.sr{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin-bottom:14px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;position:relative;overflow:hidden}
+.stat::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
+.stat.g::after{background:linear-gradient(90deg,var(--green),transparent)}
+.stat.p::after{background:linear-gradient(90deg,var(--accent),transparent)}
+.stat.b::after{background:linear-gradient(90deg,var(--blue),transparent)}
+.stat.a::after{background:linear-gradient(90deg,var(--amber),transparent)}
+.sl{font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px}
+.sv{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;letter-spacing:-0.5px;line-height:1}
+.sv.g{color:var(--green)}.sv.p{color:var(--accent)}.sv.b{color:var(--blue)}.sv.a{color:var(--amber)}
+.sc{font-size:10px;color:var(--text2);margin-top:6px}.sc.up{color:var(--green)}.sc.dn{color:var(--red)}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.8px;padding:0 12px 10px;text-align:left;border-bottom:1px solid var(--border)}
+.tbl td{padding:11px 12px;font-size:12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,0.013)}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600}
+.badge::before{content:'';width:4px;height:4px;border-radius:50%;background:currentColor}
+.bdg{background:var(--gbg);color:var(--green);border:1px solid var(--gb)}
+.bda{background:var(--abg);color:var(--amber);border:1px solid var(--ab)}
+.bdb2{background:var(--bbg);color:var(--blue);border:1px solid var(--bb)}
+.bdp2{background:rgba(139,92,246,0.1);color:var(--accent);border:1px solid rgba(139,92,246,0.2)}
+.pw{display:flex;align-items:center;gap:8px}
+.pb{flex:1;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.pf{height:100%;border-radius:2px;background:var(--accent);transition:width .4s ease}
+.pv{font-size:10px;color:var(--text2);min-width:26px;text-align:right}
+.row{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--bg3);border-radius:var(--r2);font-size:12px;gap:8px;transition:background .12s}
+.row:hover{background:rgba(255,255,255,0.04)}
+.row+.row{margin-top:5px}
+.rl{display:flex;align-items:center;gap:8px}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.cav{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;flex-shrink:0}
+.tli{display:flex;gap:11px;padding-bottom:16px;position:relative}
+.tli::before{content:'';position:absolute;left:9px;top:22px;bottom:0;width:1px;background:var(--border)}
+.tli:last-child::before{display:none}
+.tld{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;z-index:1}
+.tld.g{background:var(--gbg)}.tld.p{background:rgba(139,92,246,0.12)}.tld.b{background:var(--bbg)}.tld.a{background:var(--abg)}
+.tlt{font-size:12px;font-weight:500;padding-top:1px}
+.tlm{font-size:10px;color:var(--text2);margin-top:1px}
+.bd{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-radius:var(--r2);font-size:12px;border:1px solid transparent;gap:8px}
+.bd+.bd{margin-top:5px}
+.bd.ok{background:var(--gbg);border-color:var(--gb)}
+.bd.no{background:var(--rbg);border-color:var(--rb)}
+.bdo{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;background:var(--gbg);color:var(--green)}
+.bdn{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;background:var(--rbg);color:var(--red)}
+.tabs{display:flex;gap:2px;background:var(--bg3);padding:3px;border-radius:var(--r2);margin-bottom:14px;width:fit-content;overflow-x:auto;max-width:100%}
+.tab{padding:5px 13px;border-radius:5px;border:none;background:transparent;color:var(--text2);font-size:11px;font-weight:500;cursor:pointer;transition:all .12s;font-family:'Inter',sans-serif;white-space:nowrap}
+.tab.active{background:var(--card);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,0.35)}
+.fg{margin-bottom:12px}
+.fl{font-size:11px;color:var(--text2);margin-bottom:4px;display:block;font-weight:500}
+.fi{width:100%;padding:9px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);color:var(--text);font-size:12px;font-family:'Inter',sans-serif;transition:all .15s;outline:none}
+.fi:focus{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(139,92,246,0.08)}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.srch{position:relative;margin-bottom:12px}
+.srch input{padding-left:32px}
+.srch::before{content:'🔍';position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:11px;pointer-events:none}
+.mbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:500;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(6px)}
+.mbg.open{display:flex;animation:fi .15s ease}
+.mo{background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:24px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
+.mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.mt{font-family:'Syne',sans-serif;font-size:15px;font-weight:700}
+.mc{background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;line-height:1;padding:0 2px}
+.mc:hover{color:var(--text)}
+/* NOTIFICATIONS */
+.npanel{position:fixed;right:0;top:0;bottom:0;width:320px;background:var(--bg2);border-left:1px solid var(--border);z-index:400;transform:translateX(100%);transition:transform .25s;display:flex;flex-direction:column}
+.npanel.open{transform:translateX(0)}
+.nph{padding:18px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.npt{font-family:'Syne',sans-serif;font-size:14px;font-weight:700}
+.npi{padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s}
+.npi:hover{background:var(--bg3)}
+.npi.ng{border-left:3px solid var(--green)}
+.npi.np{border-left:3px solid var(--accent)}
+.npi.na{border-left:3px solid var(--amber)}
+.npi.nr{border-left:3px solid var(--red)}
+.npit{font-size:12px;font-weight:500;margin-bottom:2px}
+.npis{font-size:10px;color:var(--text2)}
+.novl{display:none;position:fixed;inset:0;z-index:390}
+.novl.open{display:block}
+/* CHARTS */
+.barchart{display:flex;align-items:flex-end;gap:6px;height:100px;padding-top:8px}
+.bcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.bfill{width:100%;border-radius:3px 3px 0 0;min-height:4px;position:relative;cursor:pointer;transition:opacity .15s}
+.bfill:hover{opacity:.8}
+.bfill:hover::after{content:attr(data-v);position:absolute;top:-24px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--text);background:var(--card);padding:3px 7px;border-radius:4px;white-space:nowrap;pointer-events:none;border:1px solid var(--border);z-index:10}
+.blbl{font-size:9px;color:var(--text2)}
+.donut{position:relative;width:90px;height:90px;flex-shrink:0}
+.donut svg{transform:rotate(-90deg)}
+.dcenter{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;line-height:1}
+.dlbl{font-size:8px;color:var(--text2);font-family:'Inter',sans-serif;margin-top:1px}
+.linechart{position:relative;height:80px;margin-top:4px}
+.linechart svg{width:100%;height:100%}
+/* VAULT SCORE */
+.vsr{width:76px;height:76px;position:relative;flex-shrink:0}
+.vsr svg{transform:rotate(-90deg)}
+.vsn{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:19px;font-weight:800;color:var(--accent);line-height:1}
+.vsl{font-size:8px;color:var(--text2);font-family:'Inter',sans-serif;margin-top:1px;letter-spacing:.5px}
+/* BADGES */
+.bgr{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
+.bc{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:13px 8px;text-align:center;transition:all .15s;cursor:default}
+.bc.earned{border-color:rgba(139,92,246,0.22);background:rgba(139,92,246,0.05)}
+.bc.earned:hover{border-color:rgba(139,92,246,0.4);transform:translateY(-2px);box-shadow:0 4px 12px rgba(139,92,246,0.1)}
+.bc.locked{opacity:0.3;filter:grayscale(1)}
+.bi{font-size:22px;margin-bottom:5px}
+.bn{font-size:10px;font-weight:600;color:var(--text2)}
+.bc.earned .bn{color:var(--accent)}
+.bc.new-earn{animation:badgePop .4s ease}
+@keyframes badgePop{0%{transform:scale(0.6)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+/* CHALLENGE */
+.chal{background:linear-gradient(135deg,rgba(139,92,246,0.09),rgba(59,130,246,0.05));border:1px solid rgba(139,92,246,0.17);border-radius:var(--r);padding:16px}
+/* MILESTONES */
+.fmil{display:flex;flex-direction:column;gap:8px}
+.fmi{display:flex;align-items:center;gap:11px;padding:11px;border-radius:var(--r);border:1px solid var(--border);background:var(--bg3);transition:all .15s}
+.fmi.done{border-color:var(--gb);background:var(--gbg)}
+.fmi.cur{border-color:rgba(139,92,246,0.22);background:rgba(139,92,246,0.05)}
+.fnum{width:28px;height:28px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--text2);flex-shrink:0}
+.fmi.done .fnum{background:var(--gbg);color:var(--green)}
+.fmi.cur .fnum{background:rgba(139,92,246,0.15);color:var(--accent)}
+/* LOG */
+.logit{padding:11px;background:var(--bg3);border-radius:var(--r);border-left:3px solid var(--green);margin-bottom:6px;transition:border-color .2s}
+.logit.flag{border-left-color:var(--amber)}
+.logit.resolved{border-left-color:var(--green)}
+.logmeta{font-size:10px;color:var(--text2);margin-bottom:5px}
+.logmsg{font-size:12px;background:var(--bg);padding:8px 11px;border-radius:var(--r2);line-height:1.5}
+/* LIVE */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+@keyframes sli{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.ldot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.8s infinite;flex-shrink:0}
+/* CONFETTI */
+.cfwrap{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
+.cf{position:absolute;width:8px;height:8px;border-radius:2px;animation:cffall linear forwards}
+@keyframes cffall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+/* TYPING */
+@keyframes tdot{0%,80%,100%{transform:scale(0);opacity:0.3}40%{transform:scale(1);opacity:1}}
+.tdot span{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--text2);margin:0 2px;animation:tdot 1.2s infinite}
+.tdot span:nth-child(2){animation-delay:.2s}
+.tdot span:nth-child(3){animation-delay:.4s}
+/* TREND */
+.trend-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--r2);background:var(--bg3);margin-bottom:5px;cursor:pointer;transition:all .12s}
+.trend-item:hover{background:rgba(139,92,246,0.07);transform:translateX(2px)}
+.theat{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px}
+.hot{background:rgba(239,68,68,0.12);color:var(--red)}
+.warm{background:rgba(245,158,11,0.12);color:var(--amber)}
+.rise{background:rgba(16,185,129,0.12);color:var(--green)}
+/* CALENDAR */
+.cal-day{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:9px 6px;cursor:pointer;transition:all .12s}
+.cal-day:hover{border-color:var(--accent2);background:rgba(139,92,246,0.05)}
+.cal-day.today{border-color:rgba(139,92,246,0.35);background:rgba(139,92,246,0.06)}
+.cal-dname{font-size:9px;color:var(--text2);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;text-align:center}
+.caltask{font-size:9px;padding:3px 5px;border-radius:3px;margin-bottom:2px;text-align:center;cursor:pointer;transition:opacity .12s}
+.caltask:hover{opacity:.8}
+.caltask.ppv{background:rgba(139,92,246,0.12);color:var(--accent)}
+.caltask.social{background:rgba(59,130,246,0.1);color:var(--blue)}
+.caltask.live{background:rgba(239,68,68,0.1);color:var(--red)}
+.caltask.poll{background:rgba(245,158,11,0.1);color:var(--amber)}
+.caltask.bts{background:rgba(16,185,129,0.1);color:var(--green)}
+/* PPV */
+.ppvmeter{height:7px;background:var(--bg3);border-radius:4px;overflow:hidden;margin:6px 0}
+.ppvfill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--green2),var(--green))}
+/* UPSELL */
+.upsell{background:linear-gradient(135deg,rgba(139,92,246,0.1),rgba(59,130,246,0.06));border:1px solid rgba(139,92,246,0.2);border-radius:var(--r);padding:14px 16px;margin-bottom:14px}
+/* FAN */
+.fan-tag{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px}
+.whale{background:rgba(139,92,246,0.15);color:var(--accent)}
+.atrisk{background:var(--rbg);color:var(--red)}
+/* WELCOME */
+.welcome{background:linear-gradient(135deg,rgba(139,92,246,0.1),rgba(59,130,246,0.06));border:1px solid rgba(139,92,246,0.22);border-radius:var(--r);padding:18px;margin-bottom:16px}
+.wstep{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:12px;cursor:pointer}
+.wnum{width:20px;height:20px;border-radius:50%;background:rgba(139,92,246,0.15);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--accent);flex-shrink:0;transition:all .15s}
+.wnum.done{background:var(--gbg);color:var(--green)}
+/* STAR RATING */
+.stars{display:flex;gap:4px}
+.star{font-size:22px;cursor:pointer;transition:transform .1s;color:var(--text3)}
+.star:hover{transform:scale(1.2)}
+.star.active{color:var(--amber)}
+/* SHIFT */
+.shift-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg3);border-radius:var(--r2);font-size:12px;margin-bottom:6px;border:1px solid var(--border)}
+.shift-row.active-shift{border-color:var(--gb);background:var(--gbg)}
+/* FORECAST */
+.forecast-bar{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--bg3);border-radius:var(--r2);margin-bottom:6px}
+/* HAM */
+.ham{display:none;position:fixed;top:13px;left:13px;z-index:300;background:var(--card);border:1px solid var(--border);width:36px;height:36px;border-radius:var(--r2);cursor:pointer;align-items:center;justify-content:center;font-size:15px;color:var(--text)}
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:90}
+/* TOAST */
+#toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:10px 16px;font-size:12px;font-weight:500;z-index:9999;opacity:0;transform:translateY(8px);transition:all .25s;pointer-events:none;max-width:300px}
+/* PRICING CARDS */
+.price-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;position:relative;transition:all .2s}
+.price-card:hover{border-color:var(--accent2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(139,92,246,0.12)}
+.price-card.featured{border-color:rgba(139,92,246,0.4);background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(59,130,246,0.04))}
+.price-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--accent2);color:white;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap}
+/* RESPONSIVE */
+@media(max-width:768px){
+  .sb{transform:translateX(-100%)}.sb.open{transform:translateX(0)}
+  .main{margin-left:0;padding:14px;padding-top:58px}
+  .ham{display:flex}.ov{display:block;opacity:0;pointer-events:none;transition:opacity .25s}.ov.open{opacity:1;pointer-events:auto}
+  .g2,.g3,.g4{grid-template-columns:1fr}.sr{grid-template-columns:1fr 1fr}.fr{grid-template-columns:1fr}
+  .npanel{width:100%}
+  .tbl thead{display:none}
+  .tbl tr{display:flex;flex-wrap:wrap;gap:5px;padding:10px 0;border-bottom:1px solid var(--border)}
+  .tbl td{border:none;padding:4px 8px;background:var(--bg3);border-radius:var(--r2);font-size:11px}
+}
+</style>
+</head>
+<body>
+<!-- LOGIN PAGE -->
+<div id="login">
+  <div class="lw">
+    <div class="ll">VAULT</div>
+    <div class="lsub" data-t="tagline">The transparent OFM platform — built for creators & agencies</div>
+
+    <!-- LANGUAGE PICKER -->
+    <div class="lang-pick">
+      <button class="lbtn active" onclick="setLang('en')">🇬🇧 English</button>
+      <button class="lbtn" onclick="setLang('de')">🇩🇪 Deutsch</button>
+      <button class="lbtn" onclick="setLang('fr')">🇫🇷 Français</button>
+      <button class="lbtn" onclick="setLang('es')">🇪🇸 Español</button>
+      <button class="lbtn" onclick="setLang('pt')">🇧🇷 Português</button>
+      <button class="lbtn" onclick="setLang('it')">🇮🇹 Italiano</button>
+    </div>
+
+    <!-- SOCIAL PROOF -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:20px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2)"><span style="color:var(--green)">✦</span><span><b style="color:var(--text)">4.6M</b> creators on OF</span></div>
+      <div style="width:1px;height:14px;background:var(--border)"></div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2)"><span style="color:var(--amber)">★★★★★</span><span>Rated by agencies</span></div>
+      <div style="width:1px;height:14px;background:var(--border)"></div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2)"><span style="color:var(--blue)">◈</span><span><b style="color:var(--text)">Zero</b> competitors like this</span></div>
+    </div>
+
+    <!-- ROLE CHOICE -->
+    <div class="lcard">
+      <div class="lti" data-t="chooseRole">Choose your role</div>
+      <div class="rg">
+        <div class="rb" onclick="login('creator')">
+          <span class="ri">✦</span>
+          <div class="rn" data-t="creator">Creator</div>
+          <div class="rs" data-t="creatorSub">Transparency · Protection · Growth</div>
+        </div>
+        <div class="rb" onclick="login('manager')">
+          <span class="ri">◈</span>
+          <div class="rn" data-t="manager">Manager</div>
+          <div class="rs" data-t="managerSub">Analytics · Upsell · Retention</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VALUE PROPS -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px">
+        <div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px" data-t="forCreators">For Creators</div>
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <div style="font-size:11px;display:flex;gap:6px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span><span data-t="vp1">See every transaction from OF backend</span></div>
+          <div style="font-size:11px;display:flex;gap:6px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span><span data-t="vp2">Contract explained in plain language</span></div>
+          <div style="font-size:11px;display:flex;gap:6px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span><span data-t="vp3">Control what chatters write for you</span></div>
+          <div style="font-size:11px;display:flex;gap:6px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span><span data-t="vp4">Rate your agency anonymously</span></div>
+          <div style="font-size:11px;display:flex;gap:6px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span><span data-t="vp5">AI content ideas based on trends</span></div>
+        </div>
+        <div style="margin-top:10px;padding:7px;background:var(--gbg);border:1px solid var(--gb);border-radius:var(--r2);font-size:10px;color:var(--green)"><span data-t="freePlan">Free plan available · Premium from</span> <b>€9.99/mo</b></div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px">
+        <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px" data-t="forAgencies">For Agencies</div>
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <div style="font-size:11px;display:flex;gap:6px;align-items:flex-start"><span style="color:var(--blue);flex-shrink:0">◈</span><span data-t="ap1">Fan Segments · Whale / At-Risk</span></div>
+          <div style="font-size:11px;display:flex;gap:6px;align-items:flex-start"><span style="color:var(--blue);flex-shrink:0">◈</span><span data-t="ap2">Upsell Engine · auto campaigns</span></div>
+          <div style="font-size:11px;display:flex;gap:6px;align-items:flex-start"><span style="color:var(--blue);flex-shrink:0">◈</span><span data-t="ap3">Shift Manager · track chatters</span></div>
+          <div style="font-size:11px;display:flex;gap:6px;align-items:flex-start"><span style="color:var(--blue);flex-shrink:0">◈</span><span data-t="ap4">Revenue Forecast · AI prediction</span></div>
+          <div style="font-size:11px;display:flex;gap:6px;align-items:flex-start"><span style="color:var(--blue);flex-shrink:0">◈</span><span data-t="ap5">Agency Rating · build creator trust</span></div>
+        </div>
+        <div style="margin-top:10px;padding:7px;background:var(--bbg);border:1px solid var(--bb);border-radius:var(--r2);font-size:10px;color:var(--blue)"><span data-t="agencyFrom">Agency plans from</span> <b>€19.00/creator/mo</b></div>
+      </div>
+    </div>
+
+    <!-- PRICING TEASER -->
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px">
+      <div style="font-size:11px;font-weight:600;margin-bottom:12px;text-align:center" data-t="agencyPlans">Agency Plans</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+        <div class="price-card" style="padding:14px;text-align:center">
+          <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:4px">Starter</div>
+          <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--text)">€19<span style="font-size:11px;color:var(--text2)">.00</span></div>
+          <div style="font-size:9px;color:var(--text2);margin-top:2px">/creator/mo</div>
+          <div style="font-size:10px;color:var(--text2);margin-top:8px;line-height:1.5">Revenue reports<br>Chatter Log<br>Transparency</div>
+        </div>
+        <div class="price-card featured" style="padding:14px;text-align:center">
+          <div class="price-badge">Most Popular</div>
+          <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:4px">Growth</div>
+          <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--accent)">€39<span style="font-size:11px;color:var(--text2)">.00</span></div>
+          <div style="font-size:9px;color:var(--text2);margin-top:2px">/creator/mo</div>
+          <div style="font-size:10px;color:var(--text2);margin-top:8px;line-height:1.5">Fan Segments<br>Upsell Engine<br>PPV Optimizer</div>
+        </div>
+        <div class="price-card" style="padding:14px;text-align:center">
+          <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:4px">Pro</div>
+          <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--text)">€59<span style="font-size:11px;color:var(--text2)">.00</span></div>
+          <div style="font-size:9px;color:var(--text2);margin-top:2px">/creator/mo</div>
+          <div style="font-size:10px;color:var(--text2);margin-top:8px;line-height:1.5">Vault AI<br>Trend Pulse<br>Forecast AI</div>
+        </div>
+      </div>
+      <div style="margin-top:10px;padding:8px;background:rgba(139,92,246,0.07);border:1px solid rgba(139,92,246,0.17);border-radius:var(--r2);font-size:10px;color:var(--accent);text-align:center" data-t="uniqueMsg">✦ The only platform with creator transparency + agency power tools in one</div>
+    </div>
+
+  </div>
+</div>
+
+<button class="ham" id="ham" onclick="toggleSb()">☰</button>
+<div class="ov" id="ov" onclick="toggleSb()"></div>
+<div class="novl" id="novl" onclick="closeNotif()"></div>
+
+<!-- NOTIFICATIONS PANEL -->
+<div class="npanel" id="npanel">
+  <div class="nph"><div class="npt">🔔 Notifications</div><button class="mc" onclick="closeNotif()">×</button></div>
+  <div style="overflow-y:auto;flex:1" id="notifList">
+    <div class="npi ng" onclick="closeNotif();sv('rev');showToast('💰 Payout received')"><div class="npit">💰 Payout sent</div><div class="npis">€960.00 · Today 08:14</div></div>
+    <div class="npi np" onclick="closeNotif();sv('fut');showToast('✦ Vault Score updated')"><div class="npit">✦ Vault Score +12 pts</div><div class="npis">Weekly challenge completed · 2h ago</div></div>
+    <div class="npi na" onclick="closeNotif();sv('clog');showToast('⚠ Opening Chatter Log')"><div class="npit">⚠ Chatter Log · Flagged message</div><div class="npis">Jake M. · Fan #4821 · 3h ago</div></div>
+    <div class="npi np" onclick="closeNotif();sv('trend');showToast('🔥 Opening Trend Pulse')"><div class="npit">🔥 Trend Pulse · New hot trend</div><div class="npis">Nurse Roleplay +84% on Reddit</div></div>
+    <div class="npi" onclick="closeNotif();sv('rev')"><div class="npit">📊 Weekly report ready</div><div class="npis">Week 1 · May 2025 · Yesterday</div></div>
+    <div class="npi ng" onclick="closeNotif();sv('ep')"><div class="npit">✦ New subscriber · +$29.99</div><div class="npis">Fan #2891 · Yesterday</div></div>
+  </div>
+  <div style="padding:10px;border-top:1px solid var(--border)">
+    <button class="btn btg btsm" style="width:100%" onclick="markAllRead()">Mark all as read</button>
+  </div>
+</div>
+<div id="app">
+<aside class="sb" id="sb">
+  <div class="sbhd">
+    <div class="sblo">VAULT</div>
+    <div style="display:flex;align-items:center;gap:6px">
+      <span class="sbver">v3.1</span>
+      <div class="notif-btn" onclick="openNotif()" id="nBtn">🔔<span class="nbadge" id="nBadge">4</span></div>
+    </div>
+  </div>
+  <div class="sbu">
+    <div class="av" id="uav">A</div>
+    <div style="min-width:0">
+      <div class="un" id="uname">Ashley K.</div>
+      <div class="utag" id="utag">Creator</div>
+      <div class="utier" id="utier">Rising ✦</div>
+    </div>
+  </div>
+  <!-- CREATOR NAV -->
+  <nav class="nav" id="nav-c">
+    <div class="nl">Overview</div>
+    <div class="ni active" onclick="sv('dash')">📊 Dashboard</div>
+    <div class="nl">Finance</div>
+    <div class="ni" onclick="sv('rev')">💰 Revenue & Reports</div>
+    <div class="nl">Growth</div>
+    <div class="ni" onclick="sv('inspire')">💡 Content Inspiration <span class="ndot p"></span></div>
+    <div class="ni" onclick="sv('trend')">🔥 Trend Pulse</div>
+    <div class="ni" onclick="sv('ppvopt')">🎯 PPV Optimizer</div>
+    <div class="nl">Transparency</div>
+    <div class="ni" onclick="sv('cont')">📋 My Contract</div>
+    <div class="ni" onclick="sv('bnd')">🛡️ My Boundaries</div>
+    <div class="ni" onclick="sv('clog')">💬 Chatter Log <span class="ndot"></span></div>
+    <div class="ni" onclick="sv('ep')">🔍 Earnings Proof</div>
+    <div class="nl">Protection</div>
+    <div class="ni" onclick="sv('rating')">⭐ Rate My Agency <span class="ndot p"></span></div>
+    <div class="ni" onclick="sv('protect')">🔒 Creator Protection</div>
+    <div class="nl">Freedom</div>
+    <div class="ni" onclick="sv('fut')">🌟 My Future</div>
+    <div class="nl">AI Assistant</div>
+    <div class="ni" onclick="sv('ai')">🤖 Vault AI <span class="ndot p"></span></div>
+  </nav>
+  <!-- MANAGER NAV -->
+  <nav class="nav" id="nav-m" style="display:none">
+    <div class="nl">Overview</div>
+    <div class="ni active" onclick="sv('mgr')">📊 Dashboard</div>
+    <div class="nl">Revenue</div>
+    <div class="ni" onclick="sv('revmgr')">📈 Revenue Analytics</div>
+    <div class="ni" onclick="sv('fans')">🐋 Fan Segments</div>
+    <div class="ni" onclick="sv('upsell')">🚀 Upsell Engine</div>
+    <div class="ni" onclick="sv('forecast')">🔮 Revenue Forecast</div>
+    <div class="nl">Creators</div>
+    <div class="ni" onclick="sv('crs')">✦ Creators</div>
+    <div class="ni" onclick="sv('pay')">💸 Payouts</div>
+    <div class="ni" onclick="sv('onb')">🚀 Onboarding</div>
+    <div class="nl">Team</div>
+    <div class="ni" onclick="sv('chat')">💬 Chatters</div>
+    <div class="ni" onclick="sv('shifts')">🕐 Shift Manager</div>
+    <div class="ni" onclick="sv('scripts')">📝 Script Library</div>
+    <div class="nl">Reputation</div>
+    <div class="ni" onclick="sv('agrating')">⭐ Agency Rating <span class="ndot p"></span></div>
+  </nav>
+  <div class="sbft">
+    <select class="lang-sb" onchange="setLangSb(this.value)" id="langSelect">
+      <option value="en">🇬🇧 English</option>
+      <option value="de">🇩🇪 Deutsch</option>
+      <option value="fr">🇫🇷 Français</option>
+      <option value="es">🇪🇸 Español</option>
+      <option value="pt">🇧🇷 Português</option>
+      <option value="it">🇮🇹 Italiano</option>
+    </select>
+    <button class="swb" onclick="logout()">⇄ Switch role</button>
+  </div>
+</aside>
+
+<main class="main">
+<!-- CREATOR DASHBOARD -->
+<div class="view active" id="view-dash">
+  <div class="tb">
+    <div class="tl"><div class="pt">Good morning, Ashley ✦</div><div class="ps">May 2025 · Week 2</div></div>
+    <div class="tr">
+      <button class="btn btg btsm" onclick="sv('inspire')">💡 Ideas</button>
+      <button class="btn btp btsm" onclick="om('rm')">↓ Export</button>
+    </div>
+  </div>
+  <!-- ONBOARDING WELCOME -->
+  <div class="welcome mb" id="welcomeBox">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+      <div><div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:3px">Welcome to Vault! Here are your first steps 👋</div><div style="font-size:11px;color:var(--text2)">Complete setup and earn <b style="color:var(--accent)">+100 Vault points</b></div></div>
+      <button onclick="document.getElementById('welcomeBox').style.display='none';showToast('✦ Welcome dismissed')" style="background:none;border:none;color:var(--text2);cursor:pointer;font-size:18px;line-height:1">×</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:4px">
+      <div class="wstep" onclick="showToast('✓ Contract already done!')"><div class="wnum done">✓</div><span>Contract signed & approved</span></div>
+      <div class="wstep" onclick="showToast('✓ Earnings Proof active!')"><div class="wnum done">✓</div><span>Earnings Proof activated</span></div>
+      <div class="wstep" onclick="showToast('✓ Boundaries set!')"><div class="wnum done">✓</div><span>Boundaries configured</span></div>
+      <div class="wstep" onclick="sv('ppvopt')"><div class="wnum">4</div><span style="color:var(--accent)">Set PPV prices with PPV Optimizer →</span></div>
+      <div class="wstep" onclick="sv('fut')"><div class="wnum">5</div><span style="color:var(--accent)">Create your Freedom Fund goal →</span></div>
+    </div>
+    <div class="pw" style="margin-top:12px"><div class="pb" style="height:5px"><div class="pf" style="width:60%;background:linear-gradient(90deg,var(--accent2),var(--green))"></div></div><span style="font-size:10px;color:var(--accent)">3/5 steps done</span></div>
+  </div>
+  <div class="sr">
+    <div class="stat g"><div class="sl">My Earnings</div><div class="sv g">€3,840.00</div><div class="sc up">↑ +12%</div></div>
+    <div class="stat p"><div class="sl">Vault Score</div><div class="sv p">742</div><div class="sc">Rising ✦</div></div>
+    <div class="stat b"><div class="sl">Subscribers</div><div class="sv b">1,247</div><div class="sc up">↑ +89</div></div>
+    <div class="stat a"><div class="sl">PPV Conversion</div><div class="sv a">34%</div><div class="sc up">↑ above avg</div></div>
+  </div>
+  <div class="g2 mb">
+    <div class="card">
+      <div class="ct">Revenue trend <span class="cs">May 2025</span></div>
+      <div class="linechart"><svg viewBox="0 0 280 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><defs><linearGradient id="lg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.3"/><stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/></linearGradient></defs><path d="M0,65 C20,60 40,55 60,50 C80,45 100,48 120,42 C140,36 160,30 180,25 C200,20 220,18 240,12 C260,8 270,5 280,3" stroke="#8b5cf6" stroke-width="2" fill="none"/><path d="M0,65 C20,60 40,55 60,50 C80,45 100,48 120,42 C140,36 160,30 180,25 C200,20 220,18 240,12 C260,8 270,5 280,3 L280,80 L0,80 Z" fill="url(#lg1)"/><circle cx="280" cy="3" r="4" fill="#8b5cf6"/></svg></div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text2);margin-top:4px"><span>May 1</span><span style="color:var(--accent);font-weight:600">Today €3,840.00</span></div>
+    </div>
+    <div class="card">
+      <div class="ct">Revenue split <span class="cs">by source</span></div>
+      <div style="display:flex;align-items:center;gap:14px">
+        <div class="donut"><svg width="90" height="90" viewBox="0 0 90 90"><circle cx="45" cy="45" r="34" fill="none" stroke="var(--bg3)" stroke-width="10"/><circle cx="45" cy="45" r="34" fill="none" stroke="#8b5cf6" stroke-width="10" stroke-dasharray="213" stroke-dashoffset="0"/><circle cx="45" cy="45" r="34" fill="none" stroke="#10b981" stroke-width="10" stroke-dasharray="213" stroke-dashoffset="150"/><circle cx="45" cy="45" r="34" fill="none" stroke="#3b82f6" stroke-width="10" stroke-dasharray="213" stroke-dashoffset="171"/><circle cx="45" cy="45" r="34" fill="none" stroke="#f59e0b" stroke-width="10" stroke-dasharray="213" stroke-dashoffset="192"/></svg><div class="dcenter">€12k<div class="dlbl">total</div></div></div>
+        <div style="flex:1;font-size:11px;display:flex;flex-direction:column;gap:5px">
+          <div style="display:flex;justify-content:space-between"><div style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block"></span>Subscriptions</div><b style="color:var(--green)">56%</b></div>
+          <div style="display:flex;justify-content:space-between"><div style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block"></span>PPV</div><b style="color:var(--green)">30%</b></div>
+          <div style="display:flex;justify-content:space-between"><div style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:50%;background:var(--blue);display:inline-block"></span>Tips</div><b style="color:var(--green)">10%</b></div>
+          <div style="display:flex;justify-content:space-between"><div style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:50%;background:var(--amber);display:inline-block"></span>Custom</div><b style="color:var(--green)">4%</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- LIVE WIDGET + WELLBEING WIDGET -->
+  <div class="g2 mb">
+    <div class="card">
+      <div class="ct">⚡ Live transactions <span class="cs" style="color:var(--green);display:flex;align-items:center;gap:4px"><div class="ldot" style="width:5px;height:5px"></div>live</span></div>
+      <div id="lw" style="display:flex;flex-direction:column;gap:4px;max-height:130px;overflow:hidden"></div>
+      <div style="display:flex;gap:12px;margin-top:10px;font-size:11px;flex-wrap:wrap">
+        <span>Today: <b style="color:var(--green)" id="lt2">€284.00</b></span>
+        <span>Your share: <b style="color:var(--accent)" id="ls2">€85.00</b></span>
+        <span>Txns: <b id="lc2">19</b></span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">🧘 Wellbeing <span class="cs">daily check-in</span></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+        <button class="btn btg btsm" onclick="ciW(this,'😊')" style="font-size:12px">😊</button>
+        <button class="btn btg btsm" onclick="ciW(this,'😐')" style="font-size:12px">😐</button>
+        <button class="btn btg btsm" onclick="ciW(this,'😔')" style="font-size:12px">😔</button>
+        <button class="btn btg btsm" onclick="ciW(this,'😤')" style="font-size:12px">😤</button>
+      </div>
+      <div id="cimsg" style="font-size:11px;color:var(--text2);padding:8px;background:var(--bg3);border-radius:var(--r2);min-height:34px">How are you feeling today?</div>
+      <div style="display:flex;gap:4px;margin-top:10px">
+        <div style="flex:1;text-align:center;padding:5px 2px;background:var(--bg3);border-radius:var(--r2)"><div style="font-size:8px;color:var(--text2)">Mon</div><div style="font-size:12px">😊</div></div>
+        <div style="flex:1;text-align:center;padding:5px 2px;background:var(--bg3);border-radius:var(--r2)"><div style="font-size:8px;color:var(--text2)">Tue</div><div style="font-size:12px">😊</div></div>
+        <div style="flex:1;text-align:center;padding:5px 2px;background:var(--bg3);border-radius:var(--r2)"><div style="font-size:8px;color:var(--text2)">Wed</div><div style="font-size:12px">😐</div></div>
+        <div style="flex:1;text-align:center;padding:5px 2px;background:var(--bg3);border-radius:var(--r2)"><div style="font-size:8px;color:var(--text2)">Thu</div><div style="font-size:12px">😔</div></div>
+        <div style="flex:1;text-align:center;padding:5px 2px;background:rgba(139,92,246,0.1);border-radius:var(--r2);border:1px solid rgba(139,92,246,0.18)"><div style="font-size:8px;color:var(--accent)">Today</div><div style="font-size:12px" id="todaye">—</div></div>
+        <div style="flex:1;text-align:center;padding:5px 2px;background:var(--bg3);border-radius:var(--r2);opacity:.3"><div style="font-size:8px;color:var(--text2)">Sat</div><div style="font-size:12px">—</div></div>
+        <div style="flex:1;text-align:center;padding:5px 2px;background:var(--bg3);border-radius:var(--r2);opacity:.3"><div style="font-size:8px;color:var(--text2)">Sun</div><div style="font-size:12px">—</div></div>
+      </div>
+      <button class="btn btg btsm" id="ddbtn" onclick="toggleDark()" style="width:100%;margin-top:8px">🌙 Dark Day mode</button>
+    </div>
+  </div>
+  <div class="upsell"><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px"><div><div style="font-size:11px;font-weight:600;color:var(--accent);margin-bottom:3px">🔥 Trend Pulse · Today</div><div style="font-size:12px;font-weight:600;margin-bottom:2px">Nurse roleplay +84% on Reddit · PPV €22.00 recommended</div><div style="font-size:11px;color:var(--text2)">Teacher/Student +29% · Voice Notes +62%</div></div><button class="btn btp btsm" onclick="sv('trend')">View trends →</button></div></div>
+  <div class="card gp">
+    <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+      <div class="vsr"><svg width="76" height="76" viewBox="0 0 76 76"><circle cx="38" cy="38" r="30" fill="none" stroke="rgba(139,92,246,0.13)" stroke-width="5"/><circle cx="38" cy="38" r="30" fill="none" stroke="url(#g1)" stroke-width="5" stroke-linecap="round" stroke-dasharray="188" stroke-dashoffset="37"/><defs><linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#3b82f6"/></linearGradient></defs></svg><div class="vsn">742<div class="vsl">VAULT SCORE</div></div></div>
+      <div style="flex:1"><div style="display:flex;gap:5px;margin-bottom:6px;flex-wrap:wrap"><span style="font-size:10px;padding:2px 8px;background:rgba(255,255,255,0.05);color:var(--text2);border-radius:20px">Starter</span><span style="font-size:10px;padding:2px 8px;background:rgba(139,92,246,0.18);color:var(--accent);border-radius:20px;font-weight:700;border:1px solid rgba(139,92,246,0.3)">Rising ✦</span><span style="font-size:10px;padding:2px 8px;background:rgba(255,255,255,0.04);color:var(--text3);border-radius:20px">Established</span><span style="font-size:10px;padding:2px 8px;background:rgba(255,255,255,0.04);color:var(--text3);border-radius:20px">Elite ✦✦</span></div><div class="pw" style="margin-bottom:5px"><div class="pb" style="height:5px"><div class="pf" style="width:74%;background:linear-gradient(90deg,var(--accent2),var(--blue))"></div></div><span class="pv" style="color:var(--accent)">74%</span></div><div style="font-size:10px;color:var(--text2)">258 pts to <b style="color:var(--text)">Established</b></div></div>
+      <button class="btn btg btsm" onclick="sv('fut')">My Future →</button>
+    </div>
+  </div>
+</div>
+
+<!-- REVENUE & REPORTS -->
+<div class="view" id="view-rev">
+  <div class="tb"><div class="tl"><div class="pt">Revenue & Reports</div><div class="ps">Earnings overview and documents</div></div><div class="tr"><button class="btn btg btsm" onclick="filterRev('all')">All</button><button class="btn btp btsm" onclick="exportCSV()">↓ CSV</button></div></div>
+  <div class="sr"><div class="stat g"><div class="sl">This Month</div><div class="sv g">€3,840.00</div><div class="sc up">↑ +12%</div></div><div class="stat p"><div class="sl">This Year</div><div class="sv p">€21,200.00</div></div><div class="stat b"><div class="sl">Pending</div><div class="sv b">€960.00</div><div class="sc">payout May 15</div></div><div class="stat a"><div class="sl">Avg Payout</div><div class="sv a">€1,920.00</div></div></div>
+  <div class="tabs"><button class="tab active" onclick="stab(this,'revOverview')">Overview</button><button class="tab" onclick="stab(this,'revHistory')">Payout History</button><button class="tab" onclick="stab(this,'revReports')">Reports PDF</button></div>
+  <div id="revOverview">
+    <div class="g2 mb">
+      <div class="card"><div class="ct">Monthly overview 2025 <span class="cs">hover for details</span></div>
+        <div class="barchart">
+          <div class="bcol"><div class="bfill" style="height:38px;background:var(--accent3);opacity:.4" data-v="Jan €2,800.00"></div><span class="blbl">Jan</span></div>
+          <div class="bcol"><div class="bfill" style="height:44px;background:var(--accent3);opacity:.46" data-v="Feb €3,100.00"></div><span class="blbl">Feb</span></div>
+          <div class="bcol"><div class="bfill" style="height:52px;background:var(--accent3);opacity:.54" data-v="Mar €3,600.00"></div><span class="blbl">Mar</span></div>
+          <div class="bcol"><div class="bfill" style="height:46px;background:var(--accent3);opacity:.48" data-v="Apr €3,300.00"></div><span class="blbl">Apr</span></div>
+          <div class="bcol"><div class="bfill" style="height:72px;background:linear-gradient(0deg,var(--accent3),var(--accent));box-shadow:0 0 14px rgba(139,92,246,.35)" data-v="May €3,840.00 ✦ Best!"></div><span class="blbl" style="color:var(--accent)">May</span></div>
+        </div>
+      </div>
+      <div class="card"><div class="ct">vs. Niche average</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+          <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>You</span><b style="color:var(--green)">€3,840.00</b></div><div class="pb" style="height:6px"><div class="pf" style="width:77%;background:var(--green)"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span style="color:var(--text2)">Niche avg</span><span style="color:var(--text2)">€2,400.00</span></div><div class="pb" style="height:6px"><div class="pf" style="width:48%;background:var(--text3)"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span style="color:var(--text2)">Top 10%</span><span style="color:var(--text2)">€8,000.00</span></div><div class="pb" style="height:6px"><div class="pf" style="width:100%;background:var(--accent3);opacity:.35"></div></div></div>
+        </div>
+        <div style="margin-top:10px;padding:8px;background:var(--gbg);border:1px solid var(--gb);border-radius:var(--r2);font-size:11px;color:var(--green)">✦ You're in the top 25% of your niche</div>
+      </div>
+    </div>
+  </div>
+  <div id="revHistory" style="display:none">
+    <div class="card"><div class="ct">Payout history</div>
+      <div class="row"><div class="rl"><span class="dot" style="background:var(--green)"></span>April 15, 2025</div><div><b style="color:var(--green)">€1,920.00</b> <span class="badge bdg">✓ Paid</span></div></div>
+      <div class="row"><div class="rl"><span class="dot" style="background:var(--green)"></span>April 1, 2025</div><div><b style="color:var(--green)">€1,800.00</b> <span class="badge bdg">✓ Paid</span></div></div>
+      <div class="row"><div class="rl"><span class="dot" style="background:var(--green)"></span>March 15, 2025</div><div><b style="color:var(--green)">€2,100.00</b> <span class="badge bdg">✓ Paid</span></div></div>
+      <div class="row"><div class="rl"><span class="dot" style="background:var(--amber)"></span>May 15, 2025</div><div><b style="color:var(--amber)">€960.00</b> <span class="badge bda">⏳ Pending</span></div></div>
+    </div>
+  </div>
+  <div id="revReports" style="display:none">
+    <div class="card"><div class="ct">PDF Reports</div>
+      <div class="row" style="cursor:pointer" onclick="om('rm')"><div class="rl"><span class="dot" style="background:var(--accent)"></span>May 2025 – Monthly Report</div><button class="btn btg btsm">↓ PDF</button></div>
+      <div class="row" style="cursor:pointer" onclick="showToast('📄 Download started')"><div class="rl"><span class="dot" style="background:var(--blue)"></span>April 2025 – Monthly Report</div><button class="btn btg btsm">↓ PDF</button></div>
+      <div class="row" style="cursor:pointer" onclick="showToast('📄 Download started')"><div class="rl"><span class="dot" style="background:var(--green)"></span>Q1 2025 – Quarterly Report</div><button class="btn btg btsm">↓ PDF</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENT INSPIRATION -->
+<div class="view" id="view-inspire">
+  <div class="tb"><div class="tl"><div class="pt">💡 Content Inspiration</div><div class="ps">AI ideas based on your niche and trends</div></div><div class="tr"><button class="btn btp btsm" onclick="genIdeas()">✦ Generate new</button></div></div>
+  <div class="upsell mb"><div style="font-size:11px;font-weight:600;color:var(--accent);margin-bottom:4px">Your niche: GFE + Roleplay · This week:</div><div style="font-size:12px;color:var(--text2);line-height:1.7">Nurse roleplay series is trending (+84%). Combine with voice messages for max PPV revenue.</div></div>
+  <div class="card mb">
+    <div class="ct">Content calendar <span class="cs">recommended weekly plan</span></div>
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px">
+      <div class="cal-day"><div class="cal-dname">Mon</div><div class="caltask social" onclick="showToast('📱 TikTok task added')">TikTok</div><div class="caltask bts" onclick="showToast('📸 BTS task added')">BTS</div></div>
+      <div class="cal-day"><div class="cal-dname">Tue</div><div class="caltask ppv" onclick="showToast('💜 PPV #1 task added')">PPV #1</div><div class="caltask poll" onclick="showToast('🗳️ Poll task added')">Poll</div></div>
+      <div class="cal-day today"><div class="cal-dname" style="color:var(--accent)">Wed ●</div><div class="caltask ppv" onclick="showToast('💜 PPV #2 task added')">PPV #2</div><div class="caltask social" onclick="showToast('📱 IG task added')">IG Story</div></div>
+      <div class="cal-day"><div class="cal-dname">Thu</div><div class="caltask live" onclick="showToast('🔴 Live scheduled')">Live 🔴</div></div>
+      <div class="cal-day"><div class="cal-dname">Fri</div><div class="caltask ppv" onclick="showToast('💜 Custom task added')">Custom</div><div class="caltask bts" onclick="showToast('📸 BTS task added')">BTS</div></div>
+      <div class="cal-day"><div class="cal-dname">Sat</div><div class="caltask poll" onclick="showToast('🗳️ Fan vote added')">Fan vote</div><div class="caltask social" onclick="showToast('📱 Reddit task added')">Reddit</div></div>
+      <div class="cal-day"><div class="cal-dname">Sun</div><div class="caltask bts" onclick="showToast('💜 Personal task added')">Personal</div></div>
+    </div>
+    <div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap"><span style="font-size:9px;padding:2px 6px;background:rgba(139,92,246,0.12);color:var(--accent);border-radius:3px">■ PPV</span><span style="font-size:9px;padding:2px 6px;background:rgba(59,130,246,0.1);color:var(--blue);border-radius:3px">■ Social</span><span style="font-size:9px;padding:2px 6px;background:rgba(239,68,68,0.1);color:var(--red);border-radius:3px">■ Live</span><span style="font-size:9px;padding:2px 6px;background:rgba(245,158,11,0.1);color:var(--amber);border-radius:3px">■ Fan interaction</span><span style="font-size:9px;padding:2px 6px;background:rgba(16,185,129,0.1);color:var(--green);border-radius:3px">■ BTS</span></div>
+  </div>
+  <div class="card mb">
+    <div class="ct">AI ideas <span class="cs" id="ideasTs">generated today</span></div>
+    <div id="ideaList" style="display:flex;flex-direction:column;gap:8px">
+      <div style="padding:12px;background:var(--bg3);border-radius:var(--r2);border-left:3px solid var(--accent)"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div style="font-size:11px;font-weight:600;margin-bottom:3px">🏥 Nurse Roleplay PPV series (3 parts)</div><button class="btn btp btsm" onclick="showToast('✦ Added to plan!')">Add to plan</button></div><div style="font-size:11px;color:var(--text2);line-height:1.6">Trending +84% · Recommended price: €20.00–€25.00/part · Full series: €55.00–€65.00</div><div style="display:flex;gap:5px;margin-top:7px"><span class="badge bdg">🔥 Hot</span><span class="badge bdb2">PPV</span></div></div>
+      <div style="padding:12px;background:var(--bg3);border-radius:var(--r2);border-left:3px solid var(--blue)"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div style="font-size:11px;font-weight:600;margin-bottom:3px">🎙️ Personalized voice messages</div><button class="btn btg btsm" onclick="showToast('✦ Added to plan!')">Add to plan</button></div><div style="font-size:11px;color:var(--text2);line-height:1.6">GFE niche · Price €10.00–€15.00 · High fan retention</div><div style="display:flex;gap:5px;margin-top:7px"><span class="badge bdb2">GFE</span><span class="badge bdg">Retention</span></div></div>
+      <div style="padding:12px;background:var(--bg3);border-radius:var(--r2);border-left:3px solid var(--amber)"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div style="font-size:11px;font-weight:600;margin-bottom:3px">📸 "Get ready with me" TikTok teaser</div><button class="btn btg btsm" onclick="showToast('✦ Added to plan!')">Add to plan</button></div><div style="font-size:11px;color:var(--text2);line-height:1.6">Viral format · SFW → CTA to OF · New traffic</div><div style="display:flex;gap:5px;margin-top:7px"><span class="badge bda">TikTok</span></div></div>
+      <div style="padding:12px;background:var(--bg3);border-radius:var(--r2);border-left:3px solid var(--green)"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div style="font-size:11px;font-weight:600;margin-bottom:3px">🗳️ Fan Vote: next outfit</div><button class="btn btg btsm" onclick="showToast('✦ Added to plan!')">Add to plan</button></div><div style="font-size:11px;color:var(--text2);line-height:1.6">Boosts engagement · +40% fan retention</div><div style="display:flex;gap:5px;margin-top:7px"><span class="badge bdg">Engagement</span></div></div>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ct">What sells best for YOU</div><div style="display:flex;flex-direction:column;gap:7px"><div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>PPV series</span><b style="color:var(--green)">€1,840.00/mo</b></div><div class="pb" style="height:5px"><div class="pf" style="width:85%;background:var(--green)"></div></div></div><div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>Custom content</span><b style="color:var(--blue)">€960.00/mo</b></div><div class="pb" style="height:5px"><div class="pf" style="width:55%;background:var(--blue)"></div></div></div><div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>Subscriptions</span><b>€750.00/mo</b></div><div class="pb" style="height:5px"><div class="pf" style="width:40%;background:var(--accent3)"></div></div></div><div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>Voice messages</span><b style="color:var(--amber)">€290.00/mo</b></div><div class="pb" style="height:5px"><div class="pf" style="width:18%;background:var(--amber)"></div></div></div></div></div>
+    <div class="card"><div class="ct">Best posting time</div><div class="barchart" style="height:80px"><div class="bcol"><div class="bfill" style="height:15px;background:var(--accent3);opacity:.3" data-v="9h – low activity"></div><span class="blbl">9h</span></div><div class="bcol"><div class="bfill" style="height:25px;background:var(--accent3);opacity:.4" data-v="12h – medium"></div><span class="blbl">12h</span></div><div class="bcol"><div class="bfill" style="height:48px;background:var(--accent3);opacity:.6" data-v="18h – high"></div><span class="blbl">18h</span></div><div class="bcol"><div class="bfill" style="height:64px;background:linear-gradient(0deg,var(--accent3),var(--accent));box-shadow:0 0 10px rgba(139,92,246,.3)" data-v="21h – PEAK 🔥"></div><span class="blbl" style="color:var(--accent)">21h</span></div><div class="bcol"><div class="bfill" style="height:36px;background:var(--accent3);opacity:.45" data-v="23h – medium"></div><span class="blbl">23h</span></div></div><div style="margin-top:8px;padding:7px;background:var(--gbg);border:1px solid var(--gb);border-radius:var(--r2);font-size:10px;color:var(--green)">🔥 Best time: 21:00–22:30</div></div>
+  </div>
+</div>
+
+<!-- TREND PULSE -->
+<div class="view" id="view-trend">
+  <div class="tb"><div class="tl"><div class="pt">🔥 Trend Pulse</div><div class="ps">What's trending in your niche right now</div></div><div class="tr"><span style="font-size:10px;color:var(--text2)">Updated 2h ago</span></div></div>
+  <div class="sr"><div class="stat g"><div class="sl">Trending Topics</div><div class="sv g">12</div></div><div class="stat p"><div class="sl">Top Trend</div><div class="sv p" style="font-size:16px;margin-top:4px">Nurse 🏥</div><div class="sc up">+84%</div></div><div class="stat b"><div class="sl">Viral Format</div><div class="sv b" style="font-size:14px;margin-top:4px">POV video</div><div class="sc up">+62%</div></div></div>
+  <div class="g2 mb">
+    <div class="card"><div class="ct">🔥 Hot trends <span class="cs">Reddit · TikTok · X</span></div>
+      <div class="trend-item" onclick="addToPlan('Nurse Roleplay')"><div style="flex:1"><div style="font-size:12px;font-weight:500">Nurse Roleplay</div><div style="font-size:10px;color:var(--text2)">Reddit r/GFE · 4,200 posts</div></div><div style="display:flex;gap:6px;align-items:center"><span class="theat hot">🔥 +84%</span><button class="btn btp btsm">Use</button></div></div>
+      <div class="trend-item" onclick="addToPlan('POV Voice Note')"><div style="flex:1"><div style="font-size:12px;font-weight:500">POV Voice Note</div><div style="font-size:10px;color:var(--text2)">TikTok · 2.1M views</div></div><div style="display:flex;gap:6px;align-items:center"><span class="theat hot">🔥 +62%</span><button class="btn btp btsm">Use</button></div></div>
+      <div class="trend-item" onclick="addToPlan('Outfit Challenge')"><div style="flex:1"><div style="font-size:12px;font-weight:500">Outfit Challenge</div><div style="font-size:10px;color:var(--text2)">Instagram Reels</div></div><div style="display:flex;gap:6px;align-items:center"><span class="theat warm">▲ +38%</span><button class="btn btg btsm">Use</button></div></div>
+      <div class="trend-item" onclick="addToPlan('Teacher / Student')"><div style="flex:1"><div style="font-size:12px;font-weight:500">Teacher / Student</div><div style="font-size:10px;color:var(--text2)">Twitter/X · growing</div></div><div style="display:flex;gap:6px;align-items:center"><span class="theat warm">▲ +29%</span><button class="btn btg btsm">Use</button></div></div>
+      <div class="trend-item" onclick="addToPlan('Late Night GFE')"><div style="flex:1"><div style="font-size:12px;font-weight:500">Late Night GFE</div><div style="font-size:10px;color:var(--text2)">OF search · rising</div></div><div style="display:flex;gap:6px;align-items:center"><span class="theat rise">↑ +21%</span><button class="btn btg btsm">Use</button></div></div>
+    </div>
+    <div class="card"><div class="ct">📈 Trend chart <span class="cs">7 days</span></div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>Nurse Roleplay</span><span style="color:var(--red)">+84%</span></div><div class="pb" style="height:6px"><div class="pf" style="width:84%;background:linear-gradient(90deg,var(--red),#ff6b6b)"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>POV Voice</span><span style="color:var(--amber)">+62%</span></div><div class="pb" style="height:6px"><div class="pf" style="width:62%;background:var(--amber)"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>Outfit Challenge</span><span style="color:var(--accent)">+38%</span></div><div class="pb" style="height:6px"><div class="pf" style="width:38%;background:var(--accent)"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>Teacher/Student</span><span style="color:var(--blue)">+29%</span></div><div class="pb" style="height:6px"><div class="pf" style="width:29%;background:var(--blue)"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>Late Night GFE</span><span style="color:var(--green)">+21%</span></div><div class="pb" style="height:6px"><div class="pf" style="width:21%;background:var(--green)"></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PPV OPTIMIZER -->
+<div class="view" id="view-ppvopt">
+  <div class="tb"><div class="tl"><div class="pt">🎯 PPV Optimizer</div><div class="ps">Maximize revenue from every PPV</div></div></div>
+  <div class="sr"><div class="stat g"><div class="sl">Your Avg PPV Price</div><div class="sv g">€17.50</div><div class="sc">niche avg: €22.00</div></div><div class="stat p"><div class="sl">Conversion Rate</div><div class="sv p">34%</div><div class="sc up">↑ above avg</div></div><div class="stat b"><div class="sl">Extra Potential</div><div class="sv b">+€680.00</div><div class="sc">at €22.00 price</div></div></div>
+  <div class="card mb"><div class="ct">Price vs Conversion analysis <span class="cs">hover bars for details</span></div>
+    <div class="barchart">
+      <div class="bcol"><div class="bfill" style="height:45px;background:var(--blue);opacity:.5" data-v="€10.00 · Conv 68% · Rev €680.00"></div><span class="blbl">€10</span></div>
+      <div class="bcol"><div class="bfill" style="height:62px;background:var(--blue);opacity:.65" data-v="€15.00 · Conv 52% · Rev €780.00"></div><span class="blbl">€15</span></div>
+      <div class="bcol"><div class="bfill" style="height:80px;background:linear-gradient(0deg,var(--accent3),var(--accent));box-shadow:0 0 12px rgba(139,92,246,.3)" data-v="€20.00 · Conv 41% · Rev €820.00 ← SWEET SPOT"></div><span class="blbl" style="color:var(--accent)">€20 ✦</span></div>
+      <div class="bcol"><div class="bfill" style="height:72px;background:var(--green);opacity:.7" data-v="€25.00 · Conv 34% · Rev €850.00"></div><span class="blbl">€25</span></div>
+      <div class="bcol"><div class="bfill" style="height:55px;background:var(--amber);opacity:.6" data-v="€30.00 · Conv 24% · Rev €720.00"></div><span class="blbl">€30</span></div>
+      <div class="bcol"><div class="bfill" style="height:34px;background:var(--red);opacity:.5" data-v="€50.00 · Conv 11% · Rev €550.00"></div><span class="blbl">€50</span></div>
+    </div>
+    <div style="margin-top:10px;padding:10px;background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.2);border-radius:var(--r2)"><div style="font-size:11px;font-weight:600;color:var(--accent);margin-bottom:3px">✦ Vault recommendation</div><div style="font-size:11px;color:var(--text2)">For GFE + Roleplay niche, optimal price is <b style="color:var(--text)">€20.00–€25.00</b>. Your current €17.50 leaves ~€680.00/month on the table.</div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ct">PPV types by revenue</div><div style="display:flex;flex-direction:column;gap:6px"><div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>Roleplay series</span><b style="color:var(--green)">€65.00 avg</b></div><div style="height:7px;background:var(--bg3);border-radius:4px;overflow:hidden"><div style="height:100%;width:88%;border-radius:4px;background:linear-gradient(90deg,var(--green2),var(--green))"></div></div></div><div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>Custom video</span><b style="color:var(--blue)">€45.00 avg</b></div><div style="height:7px;background:var(--bg3);border-radius:4px;overflow:hidden"><div style="height:100%;width:65%;border-radius:4px;background:var(--blue)"></div></div></div><div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>Voice pack</span><b style="color:var(--accent)">€35.00 avg</b></div><div style="height:7px;background:var(--bg3);border-radius:4px;overflow:hidden"><div style="height:100%;width:52%;border-radius:4px;background:var(--accent)"></div></div></div><div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>Photo set</span><b style="color:var(--amber)">€15.00 avg</b></div><div style="height:7px;background:var(--bg3);border-radius:4px;overflow:hidden"><div style="height:100%;width:28%;border-radius:4px;background:var(--amber)"></div></div></div></div></div>
+    <div class="card"><div class="ct">Monthly PPV potential</div><div style="text-align:center;padding:14px 0"><div style="font-size:10px;color:var(--text2);margin-bottom:4px">At optimal prices</div><div style="font-family:'Syne',sans-serif;font-size:32px;font-weight:700;color:var(--green)">€4,520.00</div><div style="font-size:10px;color:var(--text2);margin-top:3px">vs. current €3,840.00</div><div style="font-size:11px;color:var(--green);font-weight:600;margin-top:6px">+€680.00/month potential</div></div><button class="btn btp" style="width:100%" onclick="applyPPV()">Apply recommendations ✓</button></div>
+  </div>
+</div>
+
+<!-- CONTRACT -->
+<div class="view" id="view-cont">
+  <div class="tb"><div class="tl"><div class="pt">My Contract</div><div class="ps">Your contract explained in plain language</div></div><div class="tr"><button class="btn btg btsm" onclick="om('contm')">Full text</button></div></div>
+  <div style="background:var(--gbg);border:1px solid var(--gb);border-radius:var(--r);padding:12px 15px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center">
+    <div><div style="font-size:12px;font-weight:600;color:var(--green)">Contract active · expires Dec 31, 2025</div><div style="font-size:10px;color:var(--text2)">Fair Contract Score: <b style="color:var(--green)">9.20/10</b></div></div>
+    <div style="font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:var(--green)">9.2</div>
+  </div>
+  <div class="g2 mb">
+    <div class="card"><div class="ct">Key terms</div>
+      <div style="padding:10px;background:var(--bg3);border-radius:var(--r2);border-left:3px solid var(--accent);margin-bottom:8px"><div style="font-size:9px;color:var(--accent);font-weight:700;text-transform:uppercase;margin-bottom:2px">Your share</div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700">30%</div><div style="font-size:10px;color:var(--text2)">€0.30 of every euro earned</div></div>
+      <div style="padding:10px;background:var(--bg3);border-radius:var(--r2);border-left:3px solid var(--blue)"><div style="font-size:9px;color:var(--blue);font-weight:700;text-transform:uppercase;margin-bottom:2px">Payouts</div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700">2× per month</div><div style="font-size:10px;color:var(--text2)">1st and 15th every month</div></div>
+    </div>
+    <div class="card"><div class="ct">Fair Contract Score breakdown</div>
+      <div style="display:flex;flex-direction:column;gap:5px">
+        <div style="display:flex;justify-content:space-between;font-size:11px"><span style="color:var(--text2)">Revenue share (30%)</span><span style="color:var(--green)">✓ Fair</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px"><span style="color:var(--text2)">Notice period (30 days)</span><span style="color:var(--green)">✓ Standard</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px"><span style="color:var(--text2)">Content ownership</span><span style="color:var(--green)">✓ Yours</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px"><span style="color:var(--text2)">Exit waiting period</span><span style="color:var(--amber)">⚠ 60 days</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px"><span style="color:var(--text2)">Non-compete clause</span><span style="color:var(--amber)">⚠ Active</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="card mb"><div class="ct">Your rights</div>
+    <div class="bd ok"><div>✓ Terminate with 30-day notice period</div><span class="bdo">YOURS</span></div>
+    <div class="bd ok"><div>✓ Content remains 100% your property</div><span class="bdo">YOURS</span></div>
+    <div class="bd ok"><div>✓ Right to view all transactions</div><span class="bdo">YOURS</span></div>
+    <div class="bd no"><div>✗ Working with another agency simultaneously</div><span class="bdn">LIMIT</span></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ct">Your contact</div><div style="display:flex;align-items:center;gap:9px;margin-bottom:12px"><div class="cav" style="width:38px;height:38px;background:linear-gradient(135deg,var(--accent3),var(--blue));font-size:14px">M</div><div><div style="font-weight:600;font-size:12px">Michael V.</div><div style="font-size:10px;color:var(--text2)">Account manager</div></div></div><button class="btn btg btsm" style="width:100%" onclick="om('contactm')">✉ Contact</button></div>
+    <div class="card"><div class="ct">Issue with contract?</div><p style="font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.6">Report anonymously. Vault team reviews within 48h.</p><button class="btn btd btsm" style="width:100%" onclick="om('dispm')">⚑ Report issue</button></div>
+  </div>
+</div>
+
+<!-- BOUNDARIES -->
+<div class="view" id="view-bnd">
+  <div class="tb"><div class="tl"><div class="pt">My Boundaries</div><div class="ps">Rules for chatters acting in your name</div></div><div class="tr"><button class="btn btp btsm" onclick="om('bndm')">+ Add rule</button></div></div>
+  <div class="g2 mb">
+    <div class="card"><div class="ct" style="color:var(--green)">✓ Allowed</div><div id="al"><div class="bd ok"><div>💬 Regular flirt conversation</div><span class="bdo">OK</span></div><div class="bd ok"><div>📸 Promo content from gallery</div><span class="bdo">OK</span></div><div class="bd ok"><div>💰 PPV offers up to €50.00</div><span class="bdo">OK</span></div></div></div>
+    <div class="card"><div class="ct" style="color:var(--red)">✗ Forbidden</div><div id="bl"><div class="bd no"><div>📍 Sharing location</div><span class="bdn">STOP</span></div><div class="bd no"><div>🎥 Promising custom videos</div><span class="bdn">STOP</span></div><div class="bd no"><div>💬 Personal contact info</div><span class="bdn">STOP</span></div></div></div>
+  </div>
+  <div class="card"><div class="ct">Tone of voice <span class="cs">how chatters write for you</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+      <div id="tone-playful" style="background:var(--bg3);border-radius:var(--r2);padding:12px;text-align:center;border:1px solid rgba(16,185,129,0.3);cursor:pointer" onclick="setTone('playful')"><div style="font-size:19px;margin-bottom:4px">😊</div><div style="font-size:11px;font-weight:600">Playful</div><div style="font-size:9px;color:var(--green);margin-top:3px">● Active</div></div>
+      <div id="tone-dominant" style="background:var(--bg3);border-radius:var(--r2);padding:12px;text-align:center;opacity:0.4;cursor:pointer" onclick="setTone('dominant')"><div style="font-size:19px;margin-bottom:4px">🌶️</div><div style="font-size:11px;font-weight:600">Dominant</div><div style="font-size:9px;color:var(--text2);margin-top:3px">○ Off</div></div>
+      <div id="tone-sweet" style="background:var(--bg3);border-radius:var(--r2);padding:12px;text-align:center;opacity:0.4;cursor:pointer" onclick="setTone('sweet')"><div style="font-size:19px;margin-bottom:4px">🌸</div><div style="font-size:11px;font-weight:600">Sweet</div><div style="font-size:9px;color:var(--text2);margin-top:3px">○ Off</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CHATTER LOG -->
+<div class="view" id="view-clog">
+  <div class="tb"><div class="tl"><div class="pt">Chatter Log</div><div class="ps">Messages written in your name</div></div><div class="tr"><button class="btn btg btsm" onclick="filterLog('all')">All</button><button class="btn btg btsm" onclick="filterLog('flagged')">Flagged</button></div></div>
+  <div class="sr"><div class="stat b"><div class="sl">Messages Today</div><div class="sv b">142</div></div><div class="stat g"><div class="sl">OK</div><div class="sv g">138</div><div class="sc up">97%</div></div><div class="stat a"><div class="sl">Flagged</div><div class="sv a">4</div></div></div>
+  <div class="card mb"><div class="ct" style="color:var(--amber)">⚠ Flagged messages</div>
+    <div class="logit flag" id="flag1">
+      <div class="logmeta">Chatter: Jake M. · 14:32 · Fan #4821 · <b style="color:var(--amber)">Possible boundary violation</b></div>
+      <div class="logmsg">"I'm in Bratislava right now, can you visit me? 😉"</div>
+      <div style="display:flex;gap:6px;margin-top:9px">
+        <button class="btn btd btsm" onclick="flagAct('flag1','r')">🚨 Report</button>
+        <button class="btn bts btsm" onclick="flagAct('flag1','ok')">✓ Mark as OK</button>
+        <button class="btn btg btsm" onclick="om('escalate')">⬆ Escalate</button>
+      </div>
+    </div>
+  </div>
+  <div class="card"><div class="ct">Sample messages</div>
+    <div class="logit"><div class="logmeta">Chris T. · 15:10 · Fan #2341</div><div class="logmsg">"Heyy, just added new content 💜 Want to see?"</div></div>
+    <div class="logit"><div class="logmeta">Jake M. · 13:45 · Fan #8821</div><div class="logmsg">"Thanks for the tip baby 🔥 PPV video only €15.00"</div></div>
+    <div class="logit"><div class="logmeta">Alex B. · 12:20 · Fan #1204</div><div class="logmsg">"Good day 😊 How are you today?"</div></div>
+  </div>
+</div>
+
+<!-- EARNINGS PROOF -->
+<div class="view" id="view-ep">
+  <div class="tb"><div class="tl"><div class="pt">Earnings Proof</div><div class="ps">Every euro verified and documented</div></div><div class="tr"><button class="btn btp btsm" onclick="showToast('📄 Exporting PDF...')">↓ PDF</button></div></div>
+  <div style="background:rgba(139,92,246,0.07);border:1px solid rgba(139,92,246,0.17);border-radius:var(--r);padding:12px 15px;margin-bottom:14px"><div style="font-size:11px;font-weight:600;color:var(--accent);margin-bottom:2px">✦ What is Earnings Proof?</div><div style="font-size:11px;color:var(--text2);line-height:1.6">Every transaction has proof directly from the OF backend. You don't have to trust the number — you can verify it. No other agency platform does this.</div></div>
+  <div class="sr"><div class="stat g"><div class="sl">Verified Revenue</div><div class="sv g">€12,800.00</div><div class="sc up">100% verified</div></div><div class="stat p"><div class="sl">Your Share</div><div class="sv p">€3,840.00</div></div><div class="stat b"><div class="sl">Transactions</div><div class="sv b">847</div></div></div>
+  <div class="card"><div class="ct">Transactions with proof</div>
+    <div class="row"><div class="rl"><span class="dot" style="background:var(--green)"></span><div><div>Subscription · Fan #4821</div><div style="font-size:9px;color:var(--text2)">Today 08:14 · #TXN-8821-0514</div></div></div><div style="text-align:right"><div style="color:var(--green);font-weight:600">+€29.99</div><button style="font-size:9px;color:var(--accent);background:none;border:none;cursor:pointer;text-decoration:underline" onclick="om('txnm')">🔍 Verify</button></div></div>
+    <div class="row"><div class="rl"><span class="dot" style="background:var(--green)"></span><div><div>PPV Message · Fan #2341</div><div style="font-size:9px;color:var(--text2)">Today 07:52 · #TXN-2341-0514</div></div></div><div style="text-align:right"><div style="color:var(--green);font-weight:600">+€15.00</div><button style="font-size:9px;color:var(--accent);background:none;border:none;cursor:pointer;text-decoration:underline" onclick="om('txnm')">🔍 Verify</button></div></div>
+    <div class="row"><div class="rl"><span class="dot" style="background:var(--blue)"></span><div><div>Tip · Fan #9102</div><div style="font-size:9px;color:var(--text2)">Yesterday 23:41 · #TXN-9102-0513</div></div></div><div style="text-align:right"><div style="color:var(--green);font-weight:600">+€50.00</div><button style="font-size:9px;color:var(--accent);background:none;border:none;cursor:pointer;text-decoration:underline" onclick="om('txnm')">🔍 Verify</button></div></div>
+  </div>
+</div>
+
+<!-- AGENCY RATING -->
+<div class="view" id="view-rating">
+  <div class="tb"><div class="tl"><div class="pt">⭐ Rate My Agency</div><div class="ps">Your voice is anonymous and protects other creators</div></div></div>
+  <div style="background:linear-gradient(135deg,rgba(245,158,11,0.1),rgba(239,68,68,0.05));border:1px solid rgba(245,158,11,0.22);border-radius:var(--r);padding:14px 16px;margin-bottom:14px"><div style="font-size:11px;font-weight:600;color:var(--amber);margin-bottom:4px">✦ Why ratings matter</div><div style="font-size:11px;color:var(--text2);line-height:1.6">Vault builds a public agency registry. Every rating is <b style="color:var(--text)">100% anonymous</b>, verified and helps other creators avoid bad agencies. Agencies with high scores earn the <b style="color:var(--amber)">Vault Verified</b> certificate.</div></div>
+  <div class="card mb">
+    <div class="ct">Vault Agency – Your current agency</div>
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:16px">
+      <div style="text-align:center"><div style="font-family:'Syne',sans-serif;font-size:40px;font-weight:800;color:var(--green);line-height:1">4.80</div><div style="font-size:10px;color:var(--text2)">out of 5.00 · 47 ratings</div><div style="font-size:14px;margin-top:4px;color:var(--amber)">★★★★★</div></div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:5px">
+        <div class="pw"><span style="font-size:11px;min-width:110px">Transparency</span><div class="pb" style="height:6px"><div class="pf" style="width:96%;background:var(--green)"></div></div><span style="font-size:10px;color:var(--green);min-width:32px">4.80</span></div>
+        <div class="pw"><span style="font-size:11px;min-width:110px">Fair payouts</span><div class="pb" style="height:6px"><div class="pf" style="width:94%;background:var(--green)"></div></div><span style="font-size:10px;color:var(--green);min-width:32px">4.70</span></div>
+        <div class="pw"><span style="font-size:11px;min-width:110px">Communication</span><div class="pb" style="height:6px"><div class="pf" style="width:90%;background:var(--blue)"></div></div><span style="font-size:10px;color:var(--blue);min-width:32px">4.50</span></div>
+        <div class="pw"><span style="font-size:11px;min-width:110px">Respect boundaries</span><div class="pb" style="height:6px"><div class="pf" style="width:98%;background:var(--green)"></div></div><span style="font-size:10px;color:var(--green);min-width:32px">4.90</span></div>
+        <div class="pw"><span style="font-size:11px;min-width:110px">Exit conditions</span><div class="pb" style="height:6px"><div class="pf" style="width:76%;background:var(--amber)"></div></div><span style="font-size:10px;color:var(--amber);min-width:32px">3.80</span></div>
+      </div>
+      <div style="padding:8px 14px;background:var(--gbg);border:1px solid var(--gb);border-radius:var(--r2);font-size:11px;font-weight:700;color:var(--green)">✦ Vault Verified</div>
+    </div>
+    <div style="border-top:1px solid var(--border);padding-top:14px">
+      <div style="font-size:12px;font-weight:600;margin-bottom:12px">Add rating (anonymous)</div>
+      <div style="margin-bottom:12px">
+        <div class="fl">Payout transparency</div>
+        <div class="stars" id="stars1" data-cat="1">
+          <span class="star active" onclick="setStars(1,1)">★</span><span class="star active" onclick="setStars(1,2)">★</span><span class="star active" onclick="setStars(1,3)">★</span><span class="star active" onclick="setStars(1,4)">★</span><span class="star active" onclick="setStars(1,5)">★</span>
+        </div>
+      </div>
+      <div style="margin-bottom:12px">
+        <div class="fl">Communication quality</div>
+        <div class="stars" id="stars2" data-cat="2">
+          <span class="star active" onclick="setStars(2,1)">★</span><span class="star active" onclick="setStars(2,2)">★</span><span class="star active" onclick="setStars(2,3)">★</span><span class="star active" onclick="setStars(2,4)">★</span><span class="star" onclick="setStars(2,5)">★</span>
+        </div>
+      </div>
+      <div style="margin-bottom:12px">
+        <div class="fl">Respect for boundaries</div>
+        <div class="stars" id="stars3" data-cat="3">
+          <span class="star active" onclick="setStars(3,1)">★</span><span class="star active" onclick="setStars(3,2)">★</span><span class="star active" onclick="setStars(3,3)">★</span><span class="star active" onclick="setStars(3,4)">★</span><span class="star active" onclick="setStars(3,5)">★</span>
+        </div>
+      </div>
+      <div style="margin-bottom:12px">
+        <div class="fl">Exit conditions</div>
+        <div class="stars" id="stars4" data-cat="4">
+          <span class="star active" onclick="setStars(4,1)">★</span><span class="star active" onclick="setStars(4,2)">★</span><span class="star active" onclick="setStars(4,3)">★</span><span class="star active" onclick="setStars(4,4)">★</span><span class="star" onclick="setStars(4,5)">★</span>
+        </div>
+      </div>
+      <div class="fg"><label class="fl">Comment (optional)</label><textarea class="fi" rows="2" style="resize:none" placeholder="Describe your experience..." id="ratingComment"></textarea></div>
+      <div class="fg"><label class="fl">Collaboration status</label><select class="fi" id="ratingStatus"><option>Still active</option><option>Ended – less than 3 months</option><option>Ended – 3–6 months</option><option>Ended – more than 6 months</option></select></div>
+      <button class="btn btp" style="width:100%" onclick="submitRating()">Submit anonymously ✦</button>
+    </div>
+  </div>
+  <div class="card"><div class="ct">Vault Agency Registry <span class="cs">public ratings</span></div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="padding:12px;background:var(--bg3);border-radius:var(--r);border-left:3px solid var(--green)"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><div><div style="font-size:12px;font-weight:600">Elite OFM Agency</div><div style="font-size:10px;color:var(--text2)">Prague · 23 creators · 12 ratings</div></div><div style="text-align:right"><div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--green)">4.60</div><div style="font-size:10px;color:var(--amber)">★★★★★</div></div></div><div style="font-size:11px;color:var(--text2);line-height:1.5">"Best agency I've worked with. Full transparency, payouts always on time."</div><div style="display:flex;gap:5px;margin-top:7px"><span style="padding:2px 7px;background:var(--gbg);color:var(--green);border-radius:4px;font-size:9px;font-weight:700">✦ Vault Verified</span></div></div>
+      <div style="padding:12px;background:var(--bg3);border-radius:var(--r);border-left:3px solid var(--amber)"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><div><div style="font-size:12px;font-weight:600">TopCreator Management</div><div style="font-size:10px;color:var(--text2)">Bratislava · 8 creators · 6 ratings</div></div><div style="text-align:right"><div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--amber)">3.20</div><div style="font-size:10px;color:var(--amber)">★★★☆☆</div></div></div><div style="font-size:11px;color:var(--text2);line-height:1.5">"Communication could be better. Exit terms were harder than promised."</div><div style="display:flex;gap:5px;margin-top:7px"><span style="padding:2px 7px;background:var(--abg);color:var(--amber);border-radius:4px;font-size:9px;font-weight:700">⚠ Under review</span></div></div>
+      <div style="padding:12px;background:var(--bg3);border-radius:var(--r);border-left:3px solid var(--red)"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><div><div style="font-size:12px;font-weight:600">FastMoney OFM</div><div style="font-size:10px;color:var(--text2)">Online · 5 ratings</div></div><div style="text-align:right"><div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--red)">1.80</div><div style="font-size:10px;color:var(--amber)">★☆☆☆☆</div></div></div><div style="font-size:11px;color:var(--text2);line-height:1.5">"Didn't receive payment for 2 months. Ignored my messages. DO NOT RECOMMEND."</div><div style="display:flex;gap:5px;margin-top:7px"><span style="padding:2px 7px;background:var(--rbg);color:var(--red);border-radius:4px;font-size:9px;font-weight:700">✗ Blacklisted</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CREATOR PROTECTION -->
+<div class="view" id="view-protect">
+  <div class="tb"><div class="tl"><div class="pt">🔒 Creator Protection</div><div class="ps">Your safety net — always available</div></div></div>
+  <div class="card gp mb">
+    <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+      <div class="vsr"><svg width="76" height="76" viewBox="0 0 76 76"><circle cx="38" cy="38" r="30" fill="none" stroke="rgba(16,185,129,0.15)" stroke-width="5"/><circle cx="38" cy="38" r="30" fill="none" stroke="url(#pg)" stroke-width="5" stroke-linecap="round" stroke-dasharray="188" stroke-dashoffset="28"/><defs><linearGradient id="pg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#3b82f6"/></linearGradient></defs></svg><div class="vsn" style="color:var(--green)">85<div class="vsl">PROTECTION</div></div></div>
+      <div style="flex:1"><div style="font-size:14px;font-weight:600;margin-bottom:4px">Your protection: <span style="color:var(--green)">Good</span></div><div style="font-size:11px;color:var(--text2);margin-bottom:8px">3 areas need attention</div><div class="pw"><div class="pb" style="height:5px"><div class="pf" style="width:85%;background:linear-gradient(90deg,var(--green2),var(--green))"></div></div><span class="pv" style="color:var(--green)">85%</span></div></div>
+    </div>
+  </div>
+  <div class="g2 mb">
+    <div class="card"><div class="ct">⚖️ Your legal rights</div>
+      <div class="bd ok"><div><div style="font-weight:500;font-size:12px">Content ownership</div><div style="font-size:10px;color:var(--text2)">Content stays 100% yours</div></div><span class="bdo">PROTECTED</span></div>
+      <div class="bd ok"><div><div style="font-weight:500;font-size:12px">Right to terminate</div><div style="font-size:10px;color:var(--text2)">30 days · no penalties</div></div><span class="bdo">PROTECTED</span></div>
+      <div class="bd ok"><div><div style="font-weight:500;font-size:12px">Data access</div><div style="font-size:10px;color:var(--text2)">All transactions anytime</div></div><span class="bdo">PROTECTED</span></div>
+      <div class="bd no"><div><div style="font-weight:500;font-size:12px">Non-compete clause</div><div style="font-size:10px;color:var(--text2)">Other agency forbidden 60 days</div></div><span class="bdn">LIMITED</span></div>
+    </div>
+    <div class="card"><div class="ct">🚨 Emergency tools</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="padding:10px;background:var(--rbg);border:1px solid var(--rb);border-radius:var(--r2)"><div style="font-size:11px;font-weight:600;color:var(--red);margin-bottom:4px">🛑 Emergency freeze</div><div style="font-size:10px;color:var(--text2);margin-bottom:8px">Instantly stops all chatter activity on your account</div><button class="btn btd btsm" style="width:100%" onclick="emergencyFreeze()">Activate freeze</button></div>
+        <div style="padding:10px;background:var(--abg);border:1px solid var(--ab);border-radius:var(--r2)"><div style="font-size:11px;font-weight:600;color:var(--amber);margin-bottom:4px">📋 Generate termination</div><div style="font-size:10px;color:var(--text2);margin-bottom:8px">Generates official termination document with date</div><button class="btn btsm" style="width:100%;background:var(--abg);border:1px solid var(--ab);color:var(--amber)" onclick="genTermination()">Generate document</button></div>
+      </div>
+    </div>
+  </div>
+  <div class="card mb"><div class="ct">📦 Exit Checklist <span class="cs">if you decide to leave</span></div>
+    <div style="display:flex;flex-direction:column;gap:6px" id="exitList">
+      <div class="row" style="cursor:pointer" onclick="toggleExit(this)"><div class="rl"><div class="wnum" style="flex-shrink:0">1</div><div><div style="font-size:12px">Export all Earnings Proof records</div><div style="font-size:10px;color:var(--text2)">Proof of all transactions</div></div></div></div>
+      <div class="row" style="cursor:pointer" onclick="toggleExit(this)"><div class="rl"><div class="wnum" style="flex-shrink:0">2</div><div><div style="font-size:12px">Back up DM templates and fan contacts</div><div style="font-size:10px;color:var(--text2)">Save data before leaving</div></div></div></div>
+      <div class="row" style="cursor:pointer" onclick="toggleExit(this)"><div class="rl"><div class="wnum" style="flex-shrink:0">3</div><div><div style="font-size:12px">Send written termination notice</div><div style="font-size:10px;color:var(--text2)">Email + Vault record</div></div></div></div>
+      <div class="row" style="cursor:pointer" onclick="toggleExit(this)"><div class="rl"><div class="wnum" style="flex-shrink:0">4</div><div><div style="font-size:12px">Change OF account password</div><div style="font-size:10px;color:var(--text2)">Security after leaving</div></div></div></div>
+      <div class="row" style="cursor:pointer" onclick="toggleExit(this)"><div class="rl"><div class="wnum" style="flex-shrink:0">5</div><div><div style="font-size:12px">Rate your agency anonymously on Vault</div><div style="font-size:10px;color:var(--text2)">Help other creators</div></div></div></div>
+    </div>
+  </div>
+  <div class="card"><div class="ct">📡 Community Signal <span class="cs">anonymous alerts</span></div>
+    <div style="background:rgba(139,92,246,0.07);border:1px solid rgba(139,92,246,0.17);border-radius:var(--r2);padding:12px;margin-bottom:10px"><div style="font-size:11px;font-weight:600;color:var(--accent);margin-bottom:3px">What is Community Signal?</div><div style="font-size:11px;color:var(--text2);line-height:1.6">If 3+ creators anonymously report the same problem with an agency, Vault sends an automatic alert to all creators of that agency.</div></div>
+    <div class="row"><div class="rl"><div style="width:7px;height:7px;border-radius:50%;background:var(--green)"></div>Vault Agency – no active signals</div><span class="badge bdg">Safe</span></div>
+    <div class="row"><div class="rl"><div style="width:7px;height:7px;border-radius:50%;background:var(--red)"></div>FastMoney OFM – 5 reports in 30 days</div><span class="badge" style="background:var(--rbg);color:var(--red);border:1px solid var(--rb)">⚠ Risk</span></div>
+  </div>
+</div>
+
+<!-- MY FUTURE -->
+<div class="view" id="view-fut">
+  <div class="tb"><div class="tl"><div class="pt">My Future 🌟</div><div class="ps">Your freedom, your terms</div></div><div class="tr"><button class="btn btg btsm" onclick="om('goalm')">+ Add goal</button></div></div>
+  <div class="card gp mb">
+    <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+      <div class="vsr"><svg width="76" height="76" viewBox="0 0 76 76"><circle cx="38" cy="38" r="30" fill="none" stroke="rgba(139,92,246,0.13)" stroke-width="5"/><circle cx="38" cy="38" r="30" fill="none" stroke="url(#g2)" stroke-width="5" stroke-linecap="round" stroke-dasharray="188" stroke-dashoffset="37"/><defs><linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#3b82f6"/></linearGradient></defs></svg><div class="vsn">742<div class="vsl">VAULT SCORE</div></div></div>
+      <div style="flex:1"><div style="display:flex;gap:5px;margin-bottom:6px;flex-wrap:wrap"><span style="font-size:10px;padding:2px 8px;background:rgba(255,255,255,0.05);color:var(--text2);border-radius:20px">Starter</span><span style="font-size:10px;padding:2px 8px;background:rgba(139,92,246,0.18);color:var(--accent);border-radius:20px;font-weight:700;border:1px solid rgba(139,92,246,0.3)">Rising ✦</span><span style="font-size:10px;padding:2px 8px;background:rgba(255,255,255,0.04);color:var(--text3);border-radius:20px">Established</span><span style="font-size:10px;padding:2px 8px;background:rgba(255,255,255,0.04);color:var(--text3);border-radius:20px">Elite ✦✦</span></div><div class="pw" style="margin-bottom:5px"><div class="pb" style="height:5px"><div class="pf" style="width:74%;background:linear-gradient(90deg,var(--accent2),var(--blue))"></div></div><span class="pv" style="color:var(--accent)">74%</span></div><div style="font-size:10px;color:var(--text2)">258 pts to <b style="color:var(--text)">Established</b></div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+      <div style="text-align:center"><div style="font-size:9px;color:var(--text2);margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px">Streak</div><div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--amber)">🔥 14</div></div>
+      <div style="text-align:center"><div style="font-size:9px;color:var(--text2);margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px">Challenges</div><div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--green)" id="challScore">8/10</div></div>
+      <div style="text-align:center"><div style="font-size:9px;color:var(--text2);margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px">Badges</div><div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--accent)" id="badgeScore">8/15</div></div>
+    </div>
+  </div>
+  <div class="chal mb">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <div><div style="font-size:9px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px">⚡ This week's challenge</div><div style="font-size:13px;font-weight:600;margin-bottom:3px">Send a PPV for €25.00 or more</div><div style="font-size:11px;color:var(--text2)">Reward: <b style="color:var(--accent)">+50 Vault pts</b> + badge 🎯</div></div>
+      <button class="btn btp btsm" id="challBtn" onclick="doChallenge(this)">Mark as done</button>
+    </div>
+    <div class="pw" style="margin-top:12px"><div class="pb" style="height:5px"><div class="pf" id="challBar" style="width:60%;background:linear-gradient(90deg,var(--accent2),var(--blue))"></div></div><span style="font-size:10px;color:var(--accent)" id="challProg">3/5</span></div>
+  </div>
+  <div class="card mb"><div class="ct">Badges <span class="cs" id="badgeLbl">8 of 15</span></div>
+    <div class="bgr"><div class="bc earned"><div class="bi">🚀</div><div class="bn">First €1k</div></div><div class="bc earned"><div class="bi">🔥</div><div class="bn">30d streak</div></div><div class="bc earned"><div class="bi">💎</div><div class="bn">100 subs</div></div><div class="bc earned"><div class="bi">⚡</div><div class="bn">PPV Queen</div></div><div class="bc earned"><div class="bi">🛡️</div><div class="bn">Boundaries</div></div><div class="bc earned"><div class="bi">📊</div><div class="bn">Report pro</div></div><div class="bc earned"><div class="bi">🌟</div><div class="bn">Rising tier</div></div><div class="bc earned"><div class="bi">💰</div><div class="bn">€10k month</div></div><div class="bc locked" id="badge8"><div class="bi">🎯</div><div class="bn">Goal crush</div></div><div class="bc locked"><div class="bi">✈️</div><div class="bn">Travel fund</div></div><div class="bc locked"><div class="bi">👑</div><div class="bn">€5k solo</div></div><div class="bc locked"><div class="bi">🏆</div><div class="bn">Elite tier</div></div><div class="bc locked"><div class="bi">💼</div><div class="bn">Biz ready</div></div><div class="bc locked"><div class="bi">🕊️</div><div class="bn">Freedom</div></div><div class="bc locked"><div class="bi">🌍</div><div class="bn">World tour</div></div></div>
+  </div>
+  <div class="card mb"><div class="ct">Freedom Fund 💜 <span class="cs">what do you want to achieve?</span></div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:14px" id="fundGrid">
+      <div class="fundopt" onclick="pickFund(this,'Travel')" style="padding:10px 4px;background:rgba(16,185,129,0.08);border:1px solid var(--gb);border-radius:var(--r2);text-align:center;cursor:pointer"><div style="font-size:16px;margin-bottom:3px">✈️</div><div style="font-size:9px;font-weight:600;color:var(--green)">Travel</div></div>
+      <div class="fundopt" onclick="pickFund(this,'Business')" style="padding:10px 4px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);text-align:center;cursor:pointer"><div style="font-size:16px;margin-bottom:3px">💼</div><div style="font-size:9px;color:var(--text2)">Business</div></div>
+      <div class="fundopt" onclick="pickFund(this,'Education')" style="padding:10px 4px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);text-align:center;cursor:pointer"><div style="font-size:16px;margin-bottom:3px">🎓</div><div style="font-size:9px;color:var(--text2)">Education</div></div>
+      <div class="fundopt" onclick="pickFund(this,'Investing')" style="padding:10px 4px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);text-align:center;cursor:pointer"><div style="font-size:16px;margin-bottom:3px">📈</div><div style="font-size:9px;color:var(--text2)">Investing</div></div>
+      <div class="fundopt" onclick="pickFund(this,'Freedom')" style="padding:10px 4px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);text-align:center;cursor:pointer"><div style="font-size:16px;margin-bottom:3px">🕊️</div><div style="font-size:9px;color:var(--text2)">Freedom</div></div>
+    </div>
+    <div class="pw" style="margin-bottom:6px"><div class="pb" style="height:7px"><div class="pf" style="width:16.8%;background:linear-gradient(90deg,var(--green2),var(--green))"></div></div><span class="pv" style="color:var(--green)">17%</span></div>
+    <div style="font-size:10px;color:var(--text2)">€8,400.00 of €50,000.00 · Monthly: <b style="color:var(--text)">€1,200.00</b> · Goal: <b style="color:var(--green)">Dec 2026</b></div>
+  </div>
+  <div class="card"><div class="ct">Milestones</div>
+    <div class="fmil">
+      <div class="fmi done"><div class="fnum">✓</div><div style="flex:1"><div style="font-size:12px;font-weight:600">First €5,000.00 saved</div><div style="font-size:10px;color:var(--text2)">Achieved · Feb 2025 🎉</div></div></div>
+      <div class="fmi cur"><div class="fnum">2</div><div style="flex:1"><div style="font-size:12px;font-weight:600">€10,000.00 emergency fund</div><div style="font-size:10px;color:var(--text2)">In progress · €1,600.00 remaining</div></div><div class="pw" style="min-width:90px"><div class="pb"><div class="pf" style="width:84%;background:var(--accent)"></div></div><span class="pv">84%</span></div></div>
+      <div class="fmi"><div class="fnum">3</div><div style="flex:1"><div style="font-size:12px;font-weight:600">€25,000.00 investment fund</div><div style="font-size:10px;color:var(--text2)">Planned · Jun 2026</div></div></div>
+      <div class="fmi"><div class="fnum">4</div><div style="flex:1"><div style="font-size:12px;font-weight:600">€50,000.00 – Full freedom ✨</div><div style="font-size:10px;color:var(--text2)">Goal · Dec 2026</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- VAULT AI -->
+<div class="view" id="view-ai">
+  <div class="tb"><div class="tl"><div class="pt">🤖 Vault AI</div><div class="ps">Real AI · Powered by Claude (Anthropic)</div></div></div>
+  <div style="background:linear-gradient(135deg,rgba(139,92,246,0.1),rgba(59,130,246,0.06));border:1px solid rgba(139,92,246,0.22);border-radius:var(--r);padding:12px 15px;margin-bottom:14px"><div style="font-size:11px;font-weight:600;color:var(--accent);margin-bottom:3px">✦ Vault AI knows your data</div><div style="font-size:11px;color:var(--text2);line-height:1.6">Real AI with your context — revenue, contract, trends, PPV prices. Ask anything in your language.</div></div>
+  <div class="card mb"><div style="font-size:10px;color:var(--text2);margin-bottom:8px">Quick questions:</div>
+    <div style="display:flex;gap:5px;flex-wrap:wrap">
+      <button class="btn btg btsm" onclick="askAI('When will I receive my payout and how much?')">When payout?</button>
+      <button class="btn btg btsm" onclick="askAI('How much did I earn this month vs last month?')">My earnings?</button>
+      <button class="btn btg btsm" onclick="askAI('Is my contract fair? Analyze my 30% share.')">Fair contract?</button>
+      <button class="btn btg btsm" onclick="askAI('What PPV should I make today based on current trends?')">PPV idea today?</button>
+      <button class="btn btg btsm" onclick="askAI('What are the top trending topics in my niche this week?')">Trending?</button>
+      <button class="btn btg btsm" onclick="askAI('What happens if I leave my agency?')">Exit info?</button>
+    </div>
+  </div>
+  <div class="card" style="display:flex;flex-direction:column;height:480px">
+    <div id="aimsgs" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding-bottom:10px">
+      <div style="display:flex;gap:8px;align-items:flex-start">
+        <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent3),var(--blue));display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0">🤖</div>
+        <div style="background:var(--bg3);border-radius:10px 10px 10px 3px;padding:10px 14px;font-size:12px;line-height:1.7;max-width:84%">Hi Ashley! I'm Vault AI, powered by Claude. I know your data:<br><br>💰 <b>Earnings:</b> €3,840.00 this month (top 25% of niche)<br>📋 <b>Contract:</b> Fair Score 9.20/10, 30% share<br>🔥 <b>Trend Pulse:</b> Nurse roleplay +84% this week<br>🎯 <b>PPV:</b> Potential +€680.00/mo at optimal prices<br><br>Ask me anything! ✦</div>
+      </div>
+    </div>
+    <div style="border-top:1px solid var(--border);padding-top:10px;display:flex;gap:6px;align-items:center">
+      <input id="aiinput" class="fi" placeholder="Ask anything..." onkeydown="if(event.key==='Enter')sendAI()" style="flex:1"/>
+      <button class="btn btp" onclick="sendAI()" id="aiSendBtn">→</button>
+    </div>
+    <div id="aiErr" style="display:none;margin-top:8px;font-size:11px;color:var(--red);padding:8px;background:var(--rbg);border-radius:var(--r2);border:1px solid var(--rb)"></div>
+  </div>
+</div>
+<!-- MANAGER DASHBOARD -->
+<div class="view" id="view-mgr">
+  <div class="tb"><div class="tl"><div class="pt">Agency Overview ◈</div><div class="ps">May 2025</div></div><div class="tr"><button class="btn btp btsm" onclick="om('addm')">+ Add Creator</button></div></div>
+  <div class="sr"><div class="stat g"><div class="sl">Total Revenue</div><div class="sv g">€48,200.00</div><div class="sc up">↑ +14%</div></div><div class="stat p"><div class="sl">Agency Profit</div><div class="sv p">€28,400.00</div></div><div class="stat b"><div class="sl">Monthly RR</div><div class="sv b">€51,400.00</div><div class="sc up">run rate</div></div><div class="stat a"><div class="sl">Avg/Creator</div><div class="sv a">€8,033.00</div></div></div>
+  <div class="g2 mb">
+    <div class="card"><div class="ct">Revenue last 6 months</div>
+      <div class="barchart"><div class="bcol"><div class="bfill" style="height:40px;background:var(--accent3);opacity:.38" data-v="Dec €31,000.00"></div><span class="blbl">Dec</span></div><div class="bcol"><div class="bfill" style="height:48px;background:var(--accent3);opacity:.44" data-v="Jan €36,000.00"></div><span class="blbl">Jan</span></div><div class="bcol"><div class="bfill" style="height:54px;background:var(--accent3);opacity:.50" data-v="Feb €39,000.00"></div><span class="blbl">Feb</span></div><div class="bcol"><div class="bfill" style="height:60px;background:var(--accent3);opacity:.56" data-v="Mar €42,000.00"></div><span class="blbl">Mar</span></div><div class="bcol"><div class="bfill" style="height:57px;background:var(--accent3);opacity:.53" data-v="Apr €40,000.00"></div><span class="blbl">Apr</span></div><div class="bcol"><div class="bfill" style="height:76px;background:linear-gradient(0deg,var(--accent3),var(--accent));box-shadow:0 0 14px rgba(139,92,246,.3)" data-v="May €48,200.00 ↑ Record!"></div><span class="blbl" style="color:var(--accent)">May</span></div></div>
+    </div>
+    <div class="card"><div class="ct">Profit breakdown</div>
+      <div style="display:flex;align-items:center;gap:14px"><div class="donut"><svg width="90" height="90" viewBox="0 0 90 90"><circle cx="45" cy="45" r="34" fill="none" stroke="var(--bg3)" stroke-width="10"/><circle cx="45" cy="45" r="34" fill="none" stroke="#8b5cf6" stroke-width="10" stroke-dasharray="213" stroke-dashoffset="0"/><circle cx="45" cy="45" r="34" fill="none" stroke="#10b981" stroke-width="10" stroke-dasharray="213" stroke-dashoffset="124"/><circle cx="45" cy="45" r="34" fill="none" stroke="#f59e0b" stroke-width="10" stroke-dasharray="213" stroke-dashoffset="186"/></svg><div class="dcenter" style="font-size:13px">€28k<div class="dlbl">profit</div></div></div>
+      <div style="flex:1;font-size:11px;display:flex;flex-direction:column;gap:5px"><div style="display:flex;justify-content:space-between"><div style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;background:var(--accent);border-radius:50%;display:inline-block"></span>Agency fee 70%</div><b>€33,740.00</b></div><div style="display:flex;justify-content:space-between"><div style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;background:var(--green);border-radius:50%;display:inline-block"></span>Chatter bonuses</div><b style="color:var(--red)">-€3,200.00</b></div><div style="display:flex;justify-content:space-between"><div style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;background:var(--amber);border-radius:50%;display:inline-block"></span>Platform fees</div><b style="color:var(--red)">-€2,140.00</b></div><div style="display:flex;justify-content:space-between;font-weight:600;padding-top:4px;border-top:1px solid var(--border)"><span>Net profit</span><b style="color:var(--green)">€28,400.00</b></div></div></div>
+    </div>
+  </div>
+  <div class="g3 mb">
+    <div class="card"><div class="sl">Chat-to-PPV</div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--accent);margin:4px 0">24%</div><div style="font-size:10px;color:var(--text2)">Team avg</div></div>
+    <div class="card"><div class="sl">Avg Rev/Chat</div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--blue);margin:4px 0">€2.84</div><div style="font-size:10px;color:var(--text2)">Per message</div></div>
+    <div class="card"><div class="sl">Churn Rate</div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--green);margin:4px 0">8.20%</div><div style="font-size:10px;color:var(--text2)">↓ below avg</div></div>
+  </div>
+  <div class="card"><div class="ct">Top creators</div>
+    <table class="tbl"><thead><tr><th>Creator</th><th>Revenue</th><th>Trend</th><th>PPV Conv.</th><th>Status</th></tr></thead><tbody>
+      <tr><td><div style="display:flex;align-items:center;gap:7px"><div class="cav" style="background:linear-gradient(135deg,#8b5cf6,#3b82f6)">A</div>Ashley K.</div></td><td style="color:var(--green);font-weight:600">€12,800.00</td><td style="color:var(--green)">↑ +12%</td><td style="color:var(--green)">34%</td><td><span class="badge bdg">Active</span></td></tr>
+      <tr><td><div style="display:flex;align-items:center;gap:7px"><div class="cav" style="background:linear-gradient(135deg,#ec4899,#f97316)">M</div>Mia R.</div></td><td style="color:var(--green);font-weight:600">€9,400.00</td><td style="color:var(--green)">↑ +5%</td><td style="color:var(--green)">28%</td><td><span class="badge bdg">Active</span></td></tr>
+      <tr><td><div style="display:flex;align-items:center;gap:7px"><div class="cav" style="background:linear-gradient(135deg,#10b981,#3b82f6)">S</div>Sofia L.</div></td><td style="color:var(--amber);font-weight:600">€7,200.00</td><td style="color:var(--red)">↓ -3%</td><td style="color:var(--amber)">19%</td><td><span class="badge bda">Paused</span></td></tr>
+    </tbody></table>
+  </div>
+</div>
+
+<!-- REVENUE ANALYTICS -->
+<div class="view" id="view-revmgr">
+  <div class="tb"><div class="tl"><div class="pt">📈 Revenue Analytics</div></div><div class="tr"><button class="btn btp btsm" onclick="showToast('📊 Exporting...')">↓ Export</button></div></div>
+  <div class="g2 mb">
+    <div class="card"><div class="ct">Revenue by creator <span class="cs">May 2025</span></div>
+      <div class="barchart"><div class="bcol"><div class="bfill" style="height:86px;background:linear-gradient(0deg,#6d28d9,#8b5cf6)" data-v="Ashley K. €12,800.00"></div><span class="blbl">A.K.</span></div><div class="bcol"><div class="bfill" style="height:63px;background:linear-gradient(0deg,#be185d,#ec4899)" data-v="Mia R. €9,400.00"></div><span class="blbl">M.R.</span></div><div class="bcol"><div class="bfill" style="height:48px;background:linear-gradient(0deg,#047857,#10b981)" data-v="Sofia L. €7,200.00"></div><span class="blbl">S.L.</span></div><div class="bcol"><div class="bfill" style="height:38px;background:var(--blue);opacity:.7" data-v="Zara M. €5,800.00"></div><span class="blbl">Z.M.</span></div><div class="bcol"><div class="bfill" style="height:30px;background:var(--amber);opacity:.7" data-v="Nina P. €4,600.00"></div><span class="blbl">N.P.</span></div></div>
+    </div>
+    <div class="card"><div class="ct">Revenue trend</div>
+      <div class="linechart"><svg viewBox="0 0 280 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><defs><linearGradient id="lg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#10b981" stop-opacity="0.25"/><stop offset="100%" stop-color="#10b981" stop-opacity="0"/></linearGradient></defs><path d="M0,70 C40,65 70,58 100,52 C130,46 150,50 180,42 C200,36 240,20 280,5" stroke="#10b981" stroke-width="2" fill="none"/><path d="M0,70 C40,65 70,58 100,52 C130,46 150,50 180,42 C200,36 240,20 280,5 L280,80 L0,80 Z" fill="url(#lg2)"/><circle cx="280" cy="5" r="4" fill="#10b981"/></svg></div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text2);margin-top:4px"><span>Dec €31,000.00</span><span style="color:var(--green);font-weight:600">May €48,200.00 ↑</span></div>
+    </div>
+  </div>
+  <div class="card"><div class="ct">Revenue sources across creators</div>
+    <table class="tbl"><thead><tr><th>Creator</th><th>Subscriptions</th><th>PPV</th><th>Tips</th><th>Custom</th><th>Total</th></tr></thead><tbody>
+      <tr><td>Ashley K.</td><td>€7,168.00</td><td>€3,840.00</td><td>€1,280.00</td><td>€512.00</td><td style="color:var(--green);font-weight:600">€12,800.00</td></tr>
+      <tr><td>Mia R.</td><td>€5,170.00</td><td>€2,820.00</td><td>€940.00</td><td>€470.00</td><td style="color:var(--green);font-weight:600">€9,400.00</td></tr>
+      <tr><td>Sofia L.</td><td>€4,032.00</td><td>€2,160.00</td><td>€720.00</td><td>€288.00</td><td style="color:var(--amber);font-weight:600">€7,200.00</td></tr>
+    </tbody></table>
+  </div>
+</div>
+
+<!-- REVENUE FORECAST (NEW) -->
+<div class="view" id="view-forecast">
+  <div class="tb"><div class="tl"><div class="pt">🔮 Revenue Forecast</div><div class="ps">AI-powered revenue prediction</div></div></div>
+  <div class="sr"><div class="stat g"><div class="sl">Next Month Forecast</div><div class="sv g">€52,400.00</div><div class="sc up">↑ +8.7% predicted</div></div><div class="stat p"><div class="sl">3-Month Forecast</div><div class="sv p">€58,200.00</div><div class="sc up">↑ by Aug 2025</div></div><div class="stat b"><div class="sl">AI Confidence</div><div class="sv b">87%</div><div class="sc">based on 6mo data</div></div></div>
+  <div class="card mb">
+    <div class="ct">Revenue forecast <span class="cs">next 6 months — AI prediction</span></div>
+    <div class="barchart">
+      <div class="bcol"><div class="bfill" style="height:76px;background:linear-gradient(0deg,var(--accent3),var(--accent));box-shadow:0 0 14px rgba(139,92,246,.3)" data-v="May (actual) €48,200.00"></div><span class="blbl" style="color:var(--accent)">May</span></div>
+      <div class="bcol"><div class="bfill" style="height:82px;background:var(--green);opacity:.6;border:2px dashed rgba(16,185,129,0.5)" data-v="Jun (forecast) €52,400.00"></div><span class="blbl" style="color:var(--green)">Jun</span></div>
+      <div class="bcol"><div class="bfill" style="height:86px;background:var(--green);opacity:.5;border:2px dashed rgba(16,185,129,0.4)" data-v="Jul (forecast) €55,100.00"></div><span class="blbl">Jul</span></div>
+      <div class="bcol"><div class="bfill" style="height:90px;background:var(--green);opacity:.45;border:2px dashed rgba(16,185,129,0.3)" data-v="Aug (forecast) €58,200.00"></div><span class="blbl">Aug</span></div>
+      <div class="bcol"><div class="bfill" style="height:88px;background:var(--green);opacity:.4;border:2px dashed rgba(16,185,129,0.25)" data-v="Sep (forecast) €57,000.00"></div><span class="blbl">Sep</span></div>
+      <div class="bcol"><div class="bfill" style="height:94px;background:var(--green);opacity:.35;border:2px dashed rgba(16,185,129,0.2)" data-v="Oct (forecast) €61,500.00"></div><span class="blbl">Oct</span></div>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:8px;font-size:10px;color:var(--text2)"><div style="display:flex;align-items:center;gap:4px"><div style="width:12px;height:3px;background:var(--accent)"></div>Actual</div><div style="display:flex;align-items:center;gap:4px"><div style="width:12px;height:3px;background:var(--green);opacity:.6;border-top:2px dashed rgba(16,185,129,.5)"></div>AI Forecast</div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ct">Growth drivers</div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>+2 new creators onboarding</span><b style="color:var(--green)">+€4,200.00</b></div><div class="pb" style="height:5px"><div class="pf" style="width:70%;background:var(--green)"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>PPV price optimization</span><b style="color:var(--blue)">+€1,360.00</b></div><div class="pb" style="height:5px"><div class="pf" style="width:35%;background:var(--blue)"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span>Upsell campaigns</span><b style="color:var(--accent)">+€980.00</b></div><div class="pb" style="height:5px"><div class="pf" style="width:22%;background:var(--accent)"></div></div></div>
+      </div>
+    </div>
+    <div class="card"><div class="ct">Risk factors</div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <div style="padding:9px;background:var(--abg);border:1px solid var(--ab);border-radius:var(--r2)"><div style="font-size:11px;font-weight:600;color:var(--amber)">⚠ Sofia L. – low activity</div><div style="font-size:10px;color:var(--text2);margin-top:2px">Potential -€2,100.00 if churn</div></div>
+        <div style="padding:9px;background:var(--rbg);border:1px solid var(--rb);border-radius:var(--r2)"><div style="font-size:11px;font-weight:600;color:var(--red)">⚠ 198 at-risk fans</div><div style="font-size:10px;color:var(--text2);margin-top:2px">Potential -€3,168.00 if leave</div></div>
+        <button class="btn btp btsm" style="width:100%" onclick="sv('upsell')">Fix with Upsell Engine →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FAN SEGMENTS -->
+<div class="view" id="view-fans">
+  <div class="tb"><div class="tl"><div class="pt">🐋 Fan Segments</div><div class="ps">Segmentation by value</div></div><div class="tr"><button class="btn btp btsm" onclick="sv('upsell')">🚀 Upsell engine</button></div></div>
+  <div class="sr"><div class="stat p"><div class="sl">Whales 🐋</div><div class="sv p">89</div><div class="sc">avg €420.00/mo</div></div><div class="stat g"><div class="sl">Regulars</div><div class="sv g">342</div></div><div class="stat a"><div class="sl">Lurkers</div><div class="sv a">516</div></div><div class="stat b"><div class="sl">At-Risk ⚠</div><div class="sv b">198</div><div class="sc dn">↓ expiring</div></div></div>
+  <div class="g2 mb">
+    <div class="card"><div class="ct">Fan value distribution</div>
+      <div class="barchart"><div class="bcol"><div class="bfill" style="height:86px;background:linear-gradient(0deg,#6d28d9,var(--accent))" data-v="Whales (89) – €37,380.00/mo · 66% revenue"></div><span class="blbl" style="color:var(--accent)">🐋</span></div><div class="bcol"><div class="bfill" style="height:56px;background:var(--green);opacity:.7" data-v="Regulars (342) – €16,416.00/mo"></div><span class="blbl">Reg.</span></div><div class="bcol"><div class="bfill" style="height:28px;background:var(--amber);opacity:.6" data-v="Lurkers (516) – €6,192.00/mo"></div><span class="blbl">Lurk.</span></div><div class="bcol"><div class="bfill" style="height:18px;background:var(--red);opacity:.5" data-v="At-Risk (198) – loss if leave"></div><span class="blbl" style="color:var(--red)">Risk</span></div></div>
+    </div>
+    <div class="card"><div class="ct">Segment value <span class="cs">monthly</span></div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <div style="display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:7px"><div style="width:30px;height:30px;border-radius:50%;background:rgba(139,92,246,0.15);display:flex;align-items:center;justify-content:center;font-size:13px">🐋</div><div><div style="font-size:11px;font-weight:600">Whales</div><div style="font-size:9px;color:var(--text2)">89 fans · 7%</div></div></div><b style="color:var(--accent)">€37,380.00</b></div>
+        <div style="display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:7px"><div style="width:30px;height:30px;border-radius:50%;background:var(--gbg);display:flex;align-items:center;justify-content:center;font-size:13px">💚</div><div><div style="font-size:11px;font-weight:600">Regulars</div><div style="font-size:9px;color:var(--text2)">342 fans</div></div></div><b style="color:var(--green)">€16,416.00</b></div>
+        <div style="display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:7px"><div style="width:30px;height:30px;border-radius:50%;background:var(--abg);display:flex;align-items:center;justify-content:center;font-size:13px">👁️</div><div><div style="font-size:11px;font-weight:600">Lurkers</div><div style="font-size:9px;color:var(--text2)">516 fans</div></div></div><b style="color:var(--amber)">€6,192.00</b></div>
+        <div style="display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:7px"><div style="width:30px;height:30px;border-radius:50%;background:var(--rbg);display:flex;align-items:center;justify-content:center;font-size:13px">⚠️</div><div><div style="font-size:11px;font-weight:600">At-Risk</div><div style="font-size:9px;color:var(--text2)">198 fans</div></div></div><b style="color:var(--red)">€3,168.00</b></div>
+      </div>
+    </div>
+  </div>
+  <div class="card"><div class="ct">Top Whales 🐋</div>
+    <table class="tbl"><thead><tr><th>Fan ID</th><th>Creator</th><th>Monthly</th><th>Last purchase</th><th>Segment</th><th>Action</th></tr></thead><tbody>
+      <tr><td style="font-weight:500">#Fan-4821</td><td>Ashley K.</td><td style="color:var(--accent);font-weight:600">€840.00</td><td>Today</td><td><span class="fan-tag whale">🐋 Whale</span></td><td><button class="btn btsm btp" onclick="sendWhale('4821')">Message</button></td></tr>
+      <tr><td style="font-weight:500">#Fan-2211</td><td>Mia R.</td><td style="color:var(--accent);font-weight:600">€620.00</td><td>Yesterday</td><td><span class="fan-tag whale">🐋 Whale</span></td><td><button class="btn btsm btp" onclick="sendWhale('2211')">Message</button></td></tr>
+      <tr><td style="font-weight:500">#Fan-3341</td><td>Sofia L.</td><td style="color:var(--red);font-weight:600">€280.00</td><td>12 days ago</td><td><span class="fan-tag atrisk">⚠️ At-Risk</span></td><td><button class="btn btsm btd" onclick="reengageFan('3341')">Re-engage</button></td></tr>
+    </tbody></table>
+  </div>
+</div>
+
+<!-- UPSELL ENGINE -->
+<div class="view" id="view-upsell">
+  <div class="tb"><div class="tl"><div class="pt">🚀 Upsell Engine</div><div class="ps">Automated revenue growth</div></div></div>
+  <div class="sr"><div class="stat g"><div class="sl">Upsell Revenue</div><div class="sv g">€4,840.00</div><div class="sc up">↑ this month</div></div><div class="stat p"><div class="sl">Active Campaigns</div><div class="sv p">7</div></div><div class="stat a"><div class="sl">Untapped Potential</div><div class="sv a">+€6,200.00</div></div></div>
+  <div class="card mb"><div class="ct">Automated campaigns</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="padding:12px;background:var(--bg3);border-radius:var(--r);border:1px solid var(--gb)"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-size:12px;font-weight:600;margin-bottom:2px">🐋 Whale PPV Campaign</div><div style="font-size:11px;color:var(--text2)">Purchase >€100.00 → auto offer exclusive PPV series</div></div><div style="display:flex;gap:6px;align-items:center"><span class="badge bdg">Active</span><button class="btn btsm btg" onclick="editCampaign('whale')">Edit</button><button class="btn btsm btd" onclick="pauseCampaign('whale')">Pause</button></div></div><div style="display:flex;gap:16px;font-size:11px;color:var(--text2)"><span>Conv: <b style="color:var(--green)">41%</b></span><span>Revenue: <b style="color:var(--green)">€1,840.00</b></span><span>Triggers: 89 fans</span></div></div>
+      <div style="padding:12px;background:var(--bg3);border-radius:var(--r);border:1px solid var(--gb)"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-size:12px;font-weight:600;margin-bottom:2px">⚠️ At-Risk Re-engagement</div><div style="font-size:11px;color:var(--text2)">7 days before expiry → special -20% offer</div></div><div style="display:flex;gap:6px;align-items:center"><span class="badge bdg">Active</span><button class="btn btsm btg" onclick="editCampaign('atrisk')">Edit</button><button class="btn btsm btd" onclick="pauseCampaign('atrisk')">Pause</button></div></div><div style="display:flex;gap:16px;font-size:11px;color:var(--text2)"><span>Recovery: <b style="color:var(--amber)">34%</b></span><span>Revenue: <b style="color:var(--green)">€980.00</b></span></div></div>
+      <div style="padding:12px;background:var(--bg3);border-radius:var(--r);border:1px solid var(--ab)"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-size:12px;font-weight:600;margin-bottom:2px">👁️ Lurker Activation</div><div style="font-size:11px;color:var(--text2)">14 days inactive → free teaser PPV</div></div><div style="display:flex;gap:6px;align-items:center"><span class="badge bda">Draft</span><button class="btn btsm btp" onclick="launchCampaign('lurker')">Launch</button></div></div><div style="font-size:11px;color:var(--text2)">Estimated revenue: <b style="color:var(--amber)">+€2,200.00</b></div></div>
+    </div>
+    <button class="btn btp btsm" style="margin-top:12px" onclick="om('newcamp')">+ New campaign</button>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ct">Upsell trend</div><div class="barchart" style="height:80px"><div class="bcol"><div class="bfill" style="height:30px;background:var(--green);opacity:.4" data-v="Feb €2,100.00"></div><span class="blbl">Feb</span></div><div class="bcol"><div class="bfill" style="height:38px;background:var(--green);opacity:.5" data-v="Mar €2,800.00"></div><span class="blbl">Mar</span></div><div class="bcol"><div class="bfill" style="height:46px;background:var(--green);opacity:.6" data-v="Apr €3,600.00"></div><span class="blbl">Apr</span></div><div class="bcol"><div class="bfill" style="height:63px;background:linear-gradient(0deg,var(--green2),var(--green));box-shadow:0 0 10px rgba(16,185,129,.3)" data-v="May €4,840.00 ↑"></div><span class="blbl" style="color:var(--green)">May</span></div></div></div>
+    <div class="card"><div class="ct">Untapped potential</div><div style="text-align:center;padding:12px 0"><div style="font-family:'Syne',sans-serif;font-size:34px;font-weight:700;color:var(--green)">+€6,200.00</div><div style="font-size:10px;color:var(--text2);margin-top:3px">monthly untapped</div></div><button class="btn btp" style="width:100%" onclick="activateAll()">Activate all campaigns</button></div>
+  </div>
+</div>
+
+<!-- CREATORS with search -->
+<div class="view" id="view-crs">
+  <div class="tb"><div class="tl"><div class="pt">Creators</div></div><div class="tr"><button class="btn btp btsm" onclick="om('addm')">+ Add</button></div></div>
+  <div class="card">
+    <div class="srch"><input class="fi" id="crSearch" placeholder="Search creators..." oninput="filterCreators(this.value)"/></div>
+    <div class="tabs"><button class="tab active" onclick="filterCrTab(this,'all')">All (6)</button><button class="tab" onclick="filterCrTab(this,'active')">Active (4)</button><button class="tab" onclick="filterCrTab(this,'paused')">Paused (1)</button></div>
+    <table class="tbl" id="crTable"><thead><tr><th>Creator</th><th>Revenue</th><th>Share</th><th>Goal</th><th>Status</th><th>Action</th></tr></thead><tbody id="crBody">
+      <tr data-name="ashley" data-status="active"><td><div style="display:flex;align-items:center;gap:7px"><div class="cav" style="background:linear-gradient(135deg,#8b5cf6,#3b82f6)">A</div><div><div style="font-weight:500">Ashley K.</div><div style="font-size:9px;color:var(--text2)">@ashleyk</div></div></div></td><td style="color:var(--green);font-weight:600">€12,800.00</td><td>70%</td><td><div class="pw"><div class="pb"><div class="pf" style="width:85%"></div></div><span class="pv">85%</span></div></td><td><span class="badge bdg">Active</span></td><td><button class="btn btsm btg" onclick="viewCreator('ashley')">View</button></td></tr>
+      <tr data-name="mia" data-status="active"><td><div style="display:flex;align-items:center;gap:7px"><div class="cav" style="background:linear-gradient(135deg,#ec4899,#f97316)">M</div><div><div style="font-weight:500">Mia R.</div><div style="font-size:9px;color:var(--text2)">@miar</div></div></div></td><td style="color:var(--green);font-weight:600">€9,400.00</td><td>65%</td><td><div class="pw"><div class="pb"><div class="pf" style="width:72%"></div></div><span class="pv">72%</span></div></td><td><span class="badge bdg">Active</span></td><td><button class="btn btsm btg" onclick="viewCreator('mia')">View</button></td></tr>
+      <tr data-name="sofia" data-status="paused"><td><div style="display:flex;align-items:center;gap:7px"><div class="cav" style="background:linear-gradient(135deg,#10b981,#3b82f6)">S</div><div><div style="font-weight:500">Sofia L.</div><div style="font-size:9px;color:var(--text2)">@sofial</div></div></div></td><td style="color:var(--amber);font-weight:600">€7,200.00</td><td>70%</td><td><div class="pw"><div class="pb"><div class="pf" style="width:58%;background:var(--amber)"></div></div><span class="pv">58%</span></div></td><td><span class="badge bda">Paused</span></td><td><button class="btn btsm btg" onclick="viewCreator('sofia')">View</button></td></tr>
+    </tbody></table>
+  </div>
+</div>
+
+<!-- PAYOUTS -->
+<div class="view" id="view-pay">
+  <div class="tb"><div class="tl"><div class="pt">Payouts</div><div class="ps">Manage creator payments</div></div><div class="tr"><button class="btn btp btsm" onclick="om('paym')">Process all</button></div></div>
+  <div class="card"><div class="ct">Pending payouts</div>
+    <div class="row"><div class="rl"><div class="cav" style="background:linear-gradient(135deg,#8b5cf6,#3b82f6)">A</div>Ashley K. · 30% of €12,800.00</div><div style="display:flex;gap:7px;align-items:center"><b style="color:var(--green)">€3,840.00</b><button class="btn bts btsm" onclick="doPayout(this,'Ashley K.')">Pay now</button></div></div>
+    <div class="row"><div class="rl"><div class="cav" style="background:linear-gradient(135deg,#ec4899,#f97316)">M</div>Mia R. · 35% of €9,400.00</div><div style="display:flex;gap:7px;align-items:center"><b style="color:var(--green)">€3,290.00</b><button class="btn bts btsm" onclick="doPayout(this,'Mia R.')">Pay now</button></div></div>
+  </div>
+</div>
+
+<!-- ONBOARDING -->
+<div class="view" id="view-onb">
+  <div class="tb"><div class="tl"><div class="pt">Onboarding</div><div class="ps">Creator setup checklist</div></div><div class="tr"><button class="btn btp btsm" onclick="om('addm')">+ New creator</button></div></div>
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div class="cav" style="background:linear-gradient(135deg,#8b5cf6,#3b82f6)">A</div><div><div style="font-weight:600">Ashley K.</div><div style="font-size:10px;color:var(--green)">85% complete</div></div></div>
+    <div class="pw" style="margin-bottom:14px"><div class="pb" style="height:5px"><div class="pf" style="width:85%;background:linear-gradient(90deg,var(--accent2),var(--green))"></div></div><span class="pv" style="color:var(--green)">85%</span></div>
+    <div style="display:flex;flex-direction:column;gap:5px">
+      <div class="row" style="background:var(--gbg);border:1px solid var(--gb);cursor:pointer" onclick="toggleOnb(this)"><div class="rl"><div style="width:18px;height:18px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:9px;color:white;flex-shrink:0">✓</div>Contract signed</div><span style="font-size:10px;color:var(--text2)">Jan 1, 2025</span></div>
+      <div class="row" style="background:var(--gbg);border:1px solid var(--gb);cursor:pointer" onclick="toggleOnb(this)"><div class="rl"><div style="width:18px;height:18px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:9px;color:white;flex-shrink:0">✓</div>Bank details verified</div></div>
+      <div class="row" style="background:var(--gbg);border:1px solid var(--gb);cursor:pointer" onclick="toggleOnb(this)"><div class="rl"><div style="width:18px;height:18px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:9px;color:white;flex-shrink:0">✓</div>Vault dashboard activated</div></div>
+      <div class="row" style="background:var(--gbg);border:1px solid var(--gb);cursor:pointer" onclick="toggleOnb(this)"><div class="rl"><div style="width:18px;height:18px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:9px;color:white;flex-shrink:0">✓</div>Boundaries configured</div></div>
+      <div class="row" style="background:var(--abg);border:1px solid var(--ab);cursor:pointer" onclick="toggleOnb(this)"><div class="rl"><div style="width:18px;height:18px;border-radius:50%;background:var(--bg3);border:2px solid var(--amber);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--amber);flex-shrink:0">5</div>First weekly report</div><span style="font-size:10px;color:var(--amber)">Pending</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- CHATTERS -->
+<div class="view" id="view-chat">
+  <div class="tb"><div class="tl"><div class="pt">Chatters</div></div><div class="tr"><button class="btn btp btsm" onclick="om('addchatter')">+ Add</button></div></div>
+  <div class="sr"><div class="stat g"><div class="sl">Active</div><div class="sv g">4</div></div><div class="stat b"><div class="sl">Avg Response</div><div class="sv b">4.20m</div></div><div class="stat p"><div class="sl">Chat-to-PPV</div><div class="sv p">24%</div></div></div>
+  <div class="g2 mb">
+    <div class="card"><div class="ct">Avg Revenue per Chat</div>
+      <div class="row"><div class="rl"><div class="cav" style="background:linear-gradient(135deg,#10b981,#3b82f6)">J</div>Jake M.</div><b style="color:var(--green)">€3.21/chat</b></div>
+      <div class="row"><div class="rl"><div class="cav" style="background:linear-gradient(135deg,#8b5cf6,#ec4899)">C</div>Chris T.</div><b style="color:var(--green)">€2.94/chat</b></div>
+      <div class="row"><div class="rl"><div class="cav" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">A</div>Alex B.</div><b style="color:var(--amber)">€1.62/chat</b></div>
+    </div>
+    <div class="card"><div class="ct">Chat-to-PPV Ratio</div>
+      <div class="row"><div class="rl"><div class="cav" style="background:linear-gradient(135deg,#10b981,#3b82f6)">J</div>Jake M.</div><b style="color:var(--green)">31%</b></div>
+      <div class="row"><div class="rl"><div class="cav" style="background:linear-gradient(135deg,#8b5cf6,#ec4899)">C</div>Chris T.</div><b style="color:var(--green)">27%</b></div>
+      <div class="row"><div class="rl"><div class="cav" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">A</div>Alex B.</div><b style="color:var(--amber)">14%</b></div>
+    </div>
+  </div>
+  <div class="card"><div class="ct">Performance score</div>
+    <table class="tbl"><thead><tr><th>Chatter</th><th>Revenue</th><th>Response</th><th>Score</th><th>Action</th></tr></thead><tbody>
+      <tr><td style="font-weight:500">Jake M.</td><td style="color:var(--green)">€4,200.00</td><td>3.10m</td><td><div class="pw"><div class="pb"><div class="pf" style="width:92%;background:var(--green)"></div></div><span class="pv" style="color:var(--green)">92</span></div></td><td><button class="btn btsm btg" onclick="viewChatter('jake')">View</button></td></tr>
+      <tr><td style="font-weight:500">Chris T.</td><td style="color:var(--green)">€3,800.00</td><td>4.80m</td><td><div class="pw"><div class="pb"><div class="pf" style="width:78%"></div></div><span class="pv">78</span></div></td><td><button class="btn btsm btg" onclick="viewChatter('chris')">View</button></td></tr>
+      <tr><td style="font-weight:500">Alex B.</td><td style="color:var(--amber)">€2,100.00</td><td>7.20m</td><td><div class="pw"><div class="pb"><div class="pf" style="width:54%;background:var(--amber)"></div></div><span class="pv" style="color:var(--amber)">54</span></div></td><td><button class="btn btsm btg" onclick="viewChatter('alex')">View</button></td></tr>
+    </tbody></table>
+  </div>
+</div>
+
+<!-- SHIFT MANAGER (NEW) -->
+<div class="view" id="view-shifts">
+  <div class="tb"><div class="tl"><div class="pt">🕐 Shift Manager</div><div class="ps">Track who worked when and what they earned</div></div><div class="tr"><button class="btn btp btsm" onclick="startShift()">+ Start shift</button></div></div>
+  <div class="sr"><div class="stat g"><div class="sl">Active Now</div><div class="sv g">2</div><div class="sc">chatters on shift</div></div><div class="stat b"><div class="sl">Today Revenue</div><div class="sv b">€1,240.00</div></div><div class="stat a"><div class="sl">Avg Shift Rev</div><div class="sv a">€620.00</div></div></div>
+  <div class="card mb"><div class="ct">Active shifts</div>
+    <div class="shift-row active-shift"><div class="cav" style="background:linear-gradient(135deg,#10b981,#3b82f6)">J</div><div style="flex:1"><div style="font-size:12px;font-weight:500">Jake M. – Ashley K.</div><div style="font-size:10px;color:var(--text2)">Started 09:00 · 4h 22m</div></div><div style="text-align:right"><div style="color:var(--green);font-weight:600">€840.00</div><button class="btn btsm btd" onclick="endShift('jake')">End shift</button></div></div>
+    <div class="shift-row active-shift"><div class="cav" style="background:linear-gradient(135deg,#8b5cf6,#ec4899)">C</div><div style="flex:1"><div style="font-size:12px;font-weight:500">Chris T. – Mia R.</div><div style="font-size:10px;color:var(--text2)">Started 10:30 · 2h 52m</div></div><div style="text-align:right"><div style="color:var(--green);font-weight:600">€400.00</div><button class="btn btsm btd" onclick="endShift('chris')">End shift</button></div></div>
+  </div>
+  <div class="card"><div class="ct">Shift history – Today</div>
+    <table class="tbl"><thead><tr><th>Chatter</th><th>Creator</th><th>Start</th><th>Duration</th><th>Revenue</th><th>Conv.</th></tr></thead><tbody>
+      <tr><td>Jake M.</td><td>Ashley K.</td><td>09:00</td><td>ongoing</td><td style="color:var(--green)">€840.00</td><td style="color:var(--green)">38%</td></tr>
+      <tr><td>Alex B.</td><td>Sofia L.</td><td>06:00</td><td>3h 00m</td><td style="color:var(--amber)">€180.00</td><td style="color:var(--amber)">14%</td></tr>
+      <tr><td>Chris T.</td><td>Mia R.</td><td>10:30</td><td>ongoing</td><td style="color:var(--green)">€400.00</td><td style="color:var(--green)">29%</td></tr>
+    </tbody></table>
+  </div>
+</div>
+
+<!-- SCRIPT LIBRARY (NEW) -->
+<div class="view" id="view-scripts">
+  <div class="tb"><div class="tl"><div class="pt">📝 Script Library</div><div class="ps">Proven DM scripts for your chatters</div></div><div class="tr"><button class="btn btp btsm" onclick="om('newscript')">+ New script</button></div></div>
+  <div class="tabs"><button class="tab active" onclick="stab(this,'scriptAll')">All (12)</button><button class="tab" onclick="stab(this,'scriptUpsell')">Upsell (4)</button><button class="tab" onclick="stab(this,'scriptReeng')">Re-engage (3)</button><button class="tab" onclick="stab(this,'scriptWelc')">Welcome (3)</button></div>
+  <div id="scriptAll">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="padding:14px;background:var(--bg3);border-radius:var(--r);border:1px solid var(--border)"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-size:12px;font-weight:600">🔥 PPV Upsell – High spender</div><div style="display:flex;gap:5px;margin-top:4px"><span class="badge bdg">Conv: 41%</span><span class="badge bdb2">Upsell</span></div></div><div style="display:flex;gap:5px"><button class="btn btsm btg" onclick="copyScript('ppv')">Copy</button><button class="btn btsm btp" onclick="useScript('ppv')">Use now</button></div></div><div style="font-size:11px;background:var(--bg);padding:10px;border-radius:var(--r2);line-height:1.7;color:var(--text2)">"Hey [name] 💜 I just created something really special for my top fans only... It's a [series/video] I think you'll absolutely love. Since you're one of my best, I wanted you to have first access 🔥 Want to see it? Only €[PRICE]"</div></div>
+      <div style="padding:14px;background:var(--bg3);border-radius:var(--r);border:1px solid var(--border)"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-size:12px;font-weight:600">💌 Re-engagement – 7 days inactive</div><div style="display:flex;gap:5px;margin-top:4px"><span class="badge bda">Conv: 28%</span><span class="badge bdp2">Re-engage</span></div></div><div style="display:flex;gap:5px"><button class="btn btsm btg" onclick="copyScript('reeng')">Copy</button><button class="btn btsm btp" onclick="useScript('reeng')">Use now</button></div></div><div style="font-size:11px;background:var(--bg);padding:10px;border-radius:var(--r2);line-height:1.7;color:var(--text2)">"I missed you [name]! 🥺 I've been posting so much new content and thinking about you. I have something special waiting for you... Come back? 💜 I'll give you 20% off your next PPV just for you ✨"</div></div>
+      <div style="padding:14px;background:var(--bg3);border-radius:var(--r);border:1px solid var(--border)"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-size:12px;font-weight:600">👋 Welcome – New subscriber</div><div style="display:flex;gap:5px;margin-top:4px"><span class="badge bdg">Sent auto</span><span class="badge bdb2">Welcome</span></div></div><div style="display:flex;gap:5px"><button class="btn btsm btg" onclick="copyScript('welcome')">Copy</button><button class="btn btsm btp" onclick="useScript('welcome')">Use now</button></div></div><div style="font-size:11px;background:var(--bg);padding:10px;border-radius:var(--r2);line-height:1.7;color:var(--text2)">"Hey [name]! Welcome to my world 💜 So happy you're here! I post [CONTENT TYPE] regularly. My DMs are always open – I love talking to my fans. Is there anything special you'd like to see? 😊"</div></div>
+    </div>
+  </div>
+  <div id="scriptUpsell" style="display:none"><div style="padding:20px;text-align:center;color:var(--text2);font-size:12px">4 upsell scripts · Filter active</div></div>
+  <div id="scriptReeng" style="display:none"><div style="padding:20px;text-align:center;color:var(--text2);font-size:12px">3 re-engagement scripts · Filter active</div></div>
+  <div id="scriptWelc" style="display:none"><div style="padding:20px;text-align:center;color:var(--text2);font-size:12px">3 welcome scripts · Filter active</div></div>
+</div>
+
+<!-- AGENCY RATING (MANAGER VIEW) -->
+<div class="view" id="view-agrating">
+  <div class="tb"><div class="tl"><div class="pt">⭐ Agency Rating</div><div class="ps">Creator ratings of your agency</div></div></div>
+  <div class="sr"><div class="stat g"><div class="sl">Overall Score</div><div class="sv g">4.80</div><div class="sc">out of 5.00 · 47 ratings</div></div><div class="stat p"><div class="sl">Vault Verified</div><div class="sv p" style="font-size:16px;margin-top:4px">✦ Active</div><div class="sc up">Certificate valid</div></div><div class="stat b"><div class="sl">Transparency</div><div class="sv b">4.80</div><div class="sc up">↑ top 5% of agencies</div></div><div class="stat a"><div class="sl">Exit Terms</div><div class="sv a">3.80</div><div class="sc dn">↓ needs improvement</div></div></div>
+  <div class="g2 mb">
+    <div class="card"><div class="ct">Score by category</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="pw"><span style="font-size:11px;min-width:120px">Transparency</span><div class="pb" style="height:6px"><div class="pf" style="width:96%;background:var(--green)"></div></div><span style="font-size:10px;color:var(--green);min-width:32px">4.80</span></div>
+        <div class="pw"><span style="font-size:11px;min-width:120px">Fair payouts</span><div class="pb" style="height:6px"><div class="pf" style="width:94%;background:var(--green)"></div></div><span style="font-size:10px;color:var(--green);min-width:32px">4.70</span></div>
+        <div class="pw"><span style="font-size:11px;min-width:120px">Communication</span><div class="pb" style="height:6px"><div class="pf" style="width:90%;background:var(--blue)"></div></div><span style="font-size:10px;color:var(--blue);min-width:32px">4.50</span></div>
+        <div class="pw"><span style="font-size:11px;min-width:120px">Respect boundaries</span><div class="pb" style="height:6px"><div class="pf" style="width:98%;background:var(--green)"></div></div><span style="font-size:10px;color:var(--green);min-width:32px">4.90</span></div>
+        <div class="pw"><span style="font-size:11px;min-width:120px">Exit terms</span><div class="pb" style="height:6px"><div class="pf" style="width:76%;background:var(--amber)"></div></div><span style="font-size:10px;color:var(--amber);min-width:32px">3.80</span></div>
+      </div>
+    </div>
+    <div class="card"><div class="ct">Ratings over time</div>
+      <div class="barchart" style="height:80px"><div class="bcol"><div class="bfill" style="height:60px;background:var(--green);opacity:.4" data-v="Q3 2024 avg 4.20"></div><span class="blbl">Q3</span></div><div class="bcol"><div class="bfill" style="height:66px;background:var(--green);opacity:.5" data-v="Q4 2024 avg 4.40"></div><span class="blbl">Q4</span></div><div class="bcol"><div class="bfill" style="height:72px;background:var(--green);opacity:.6" data-v="Q1 2025 avg 4.60"></div><span class="blbl">Q1</span></div><div class="bcol"><div class="bfill" style="height:76px;background:linear-gradient(0deg,var(--green2),var(--green));box-shadow:0 0 10px rgba(16,185,129,.3)" data-v="Q2 2025 avg 4.80 ↑"></div><span class="blbl" style="color:var(--green)">Q2</span></div></div>
+      <div style="margin-top:8px;padding:7px;background:var(--gbg);border:1px solid var(--gb);border-radius:var(--r2);font-size:10px;color:var(--green)">↑ Score improving every quarter</div>
+    </div>
+  </div>
+  <div class="card"><div class="ct">Latest reviews <span class="cs">anonymous</span></div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="padding:11px;background:var(--bg3);border-radius:var(--r);border-left:3px solid var(--green)"><div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:10px;color:var(--text2)">Still active · 3 days ago</span><span style="color:var(--amber);font-size:12px;font-weight:600">5.00 ★★★★★</span></div><div style="font-size:12px;line-height:1.5">"Best agency I've worked with. Vault showed me every transaction and I feel safe."</div></div>
+      <div style="padding:11px;background:var(--bg3);border-radius:var(--r);border-left:3px solid var(--blue)"><div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:10px;color:var(--text2)">Contract ended · 2 weeks ago</span><span style="color:var(--blue);font-size:12px;font-weight:600">4.00 ★★★★☆</span></div><div style="font-size:12px;line-height:1.5">"Payouts always on time. Exit was a bit complicated but fair."</div></div>
+      <div style="padding:11px;background:var(--bg3);border-radius:var(--r);border-left:3px solid var(--amber)"><div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:10px;color:var(--text2)">Still active · 1 month ago</span><span style="color:var(--amber);font-size:12px;font-weight:600">3.50 ★★★½☆</span></div><div style="font-size:12px;line-height:1.5">"Good but communication could be faster. Exit terms harder than contract said."</div></div>
+    </div>
+    <div style="margin-top:10px;padding:10px;background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.2);border-radius:var(--r2)"><div style="font-size:11px;font-weight:600;color:var(--amber);margin-bottom:3px">💡 Improve your score</div><div style="font-size:11px;color:var(--text2)">Exit terms rated 3.80/5.00. Consider clearer exit conditions to improve creator trust and reduce churn.</div><button class="btn btsm btg" style="margin-top:8px" onclick="om('contm')">Review contract terms</button></div>
+  </div>
+</div>
+
+</main>
+</div>
+<!-- MODALS -->
+<div class="mbg" id="rm"><div class="mo"><div class="mh"><div class="mt">📄 May 2025 – Report</div><button class="mc" onclick="cm('rm')">×</button></div><div style="background:var(--bg3);border-radius:var(--r2);padding:14px;margin-bottom:13px"><div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:12px;padding-bottom:8px;border-bottom:1px solid var(--border)"><span style="color:var(--text2)">Period</span><b>May 1–31, 2025</b></div><div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px"><span>Total revenue</span><b>€12,800.00</b></div><div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px"><span>Your share (30%)</span><b style="color:var(--green)">€3,840.00</b></div><div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px"><span>Already paid</span><b style="color:var(--green)">€2,880.00</b></div><div style="display:flex;justify-content:space-between;font-size:12px"><span>Pending</span><b style="color:var(--amber)">€960.00</b></div></div><div style="display:flex;gap:8px"><button class="btn btp" style="flex:1" onclick="showToast('📄 PDF downloading...');cm('rm')">↓ Download PDF</button><button class="btn btg" style="flex:1" onclick="showToast('📊 CSV downloading...');cm('rm')">↓ CSV</button></div></div></div>
+
+<div class="mbg" id="addm"><div class="mo"><div class="mh"><div class="mt">✦ Add Creator</div><button class="mc" onclick="cm('addm')">×</button></div><div class="fr"><div class="fg"><label class="fl">Full name</label><input class="fi" id="newName" placeholder="Ashley K."/></div><div class="fg"><label class="fl">Username</label><input class="fi" id="newUser" placeholder="@username"/></div></div><div class="fr"><div class="fg"><label class="fl">Revenue share (%)</label><input class="fi" type="number" id="newShare" placeholder="30" min="1" max="80"/></div><div class="fg"><label class="fl">Monthly goal (€)</label><input class="fi" type="number" id="newGoal" placeholder="10000"/></div></div><div class="fg"><label class="fl">Email</label><input class="fi" type="email" id="newEmail" placeholder="email@example.com"/></div><div class="fg"><label class="fl">Niche / Content type</label><select class="fi" id="newNiche"><option>GFE + Roleplay</option><option>Fitness</option><option>Lifestyle</option><option>Cosplay</option><option>Alt / Fetish</option><option>Other</option></select></div><button class="btn btp" style="width:100%" onclick="addCreator()">Add creator ✦</button></div></div>
+
+<div class="mbg" id="bndm"><div class="mo"><div class="mh"><div class="mt">🛡️ Add Boundary Rule</div><button class="mc" onclick="cm('bndm')">×</button></div><div class="fg"><label class="fl">Rule description</label><input class="fi" id="binp" placeholder="e.g. Do not share location"/></div><div class="fg"><label class="fl">Type</label><div style="display:flex;gap:6px"><button class="btn btsm" id="bok" onclick="setBnd('ok')" style="flex:1;background:var(--gbg);border:1px solid var(--gb);color:var(--green)">✓ Allowed</button><button class="btn btsm" id="bno" onclick="setBnd('no')" style="flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text2)">✗ Forbidden</button></div></div><button class="btn btp" style="width:100%" onclick="saveBnd()">Save rule</button></div></div>
+
+<div class="mbg" id="contm"><div class="mo"><div class="mh"><div class="mt">📋 Full Contract Text</div><button class="mc" onclick="cm('contm')">×</button></div><div style="background:var(--bg3);border-radius:var(--r2);padding:14px;max-height:320px;overflow-y:auto;margin-bottom:13px;font-size:12px;line-height:1.85"><div style="font-size:9px;color:var(--text2);margin-bottom:12px;text-transform:uppercase;letter-spacing:.8px">Management Agreement · Vault Agency</div><b style="color:var(--accent)">Art. 1 – Revenue share</b><br>Creator: 30%, Agency: 70%.<br><br><b style="color:var(--accent)">Art. 2 – Payouts</b><br>2× monthly, 1st and 15th. Minimum €100.00.<br><br><b style="color:var(--accent)">Art. 3 – Content ownership</b><br>Creator retains full copyright of all content.<br><br><b style="color:var(--accent)">Art. 4 – Termination</b><br>30-day notice period. 60-day non-compete period.<br><br><b style="color:var(--accent)">Art. 5 – Data protection</b><br>No sharing of personal data to third parties.</div><div style="display:flex;gap:8px"><button class="btn btp" style="flex:1" onclick="showToast('📄 PDF downloading...');cm('contm')">↓ Download PDF</button><button class="btn btd btsm" onclick="om('dispm');cm('contm')">⚑ Report issue</button></div></div></div>
+
+<div class="mbg" id="dispm"><div class="mo"><div class="mh"><div class="mt">⚑ Report Issue</div><button class="mc" onclick="cm('dispm')">×</button></div><p style="font-size:11px;color:var(--text2);margin-bottom:14px;line-height:1.6">Anonymous. Vault team reviews within 48 hours.</p><div class="fg"><label class="fl">Issue type</label><select class="fi" id="dispType"><option>Incorrect payout amount</option><option>Chatter violated my boundaries</option><option>Data was shared without consent</option><option>Contract terms not honored</option><option>Other</option></select></div><div class="fg"><label class="fl">Description</label><textarea class="fi" rows="3" style="resize:none" placeholder="Describe what happened..." id="dispDesc"></textarea></div><button class="btn btd" style="width:100%" onclick="submitDispute()">Send anonymously</button></div></div>
+
+<div class="mbg" id="contactm"><div class="mo"><div class="mh"><div class="mt">✉ Contact Manager</div><button class="mc" onclick="cm('contactm')">×</button></div><div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg3);border-radius:var(--r2);margin-bottom:14px"><div class="cav" style="width:44px;height:44px;background:linear-gradient(135deg,var(--accent3),var(--blue));font-size:16px">M</div><div><div style="font-weight:600">Michael V.</div><div style="font-size:10px;color:var(--text2)">Account Manager · Vault Agency</div><div style="font-size:10px;color:var(--green);margin-top:2px">● Usually replies within 2h</div></div></div><div class="fg"><label class="fl">Subject</label><select class="fi"><option>Question about payout</option><option>Contract question</option><option>Technical issue</option><option>General question</option></select></div><div class="fg"><label class="fl">Message</label><textarea class="fi" rows="3" style="resize:none" placeholder="Your message..."></textarea></div><button class="btn btp" style="width:100%" onclick="sendContact()">Send message</button></div></div>
+
+<div class="mbg" id="goalm"><div class="mo"><div class="mh"><div class="mt">🌟 New Goal</div><button class="mc" onclick="cm('goalm')">×</button></div><div class="fg"><label class="fl">What do you want to achieve?</label><select class="fi" id="goalType"><option>Financial goal (€)</option><option>Savings target</option><option>Subscriber count</option><option>Monthly revenue</option></select></div><div class="fg"><label class="fl">Target amount / number</label><input class="fi" type="number" id="goalVal" placeholder="e.g. 50000"/></div><div class="fg"><label class="fl">Why does this matter to you?</label><input class="fi" id="goalWhy" placeholder="e.g. I want to travel for a year in Asia"/></div><div class="fg"><label class="fl">Target date</label><input class="fi" type="month" id="goalDate"/></div><button class="btn btp" style="width:100%" onclick="saveGoal()">Save goal ✦</button></div></div>
+
+<div class="mbg" id="paym"><div class="mo"><div class="mh"><div class="mt">💸 Process Payouts</div><button class="mc" onclick="cm('paym')">×</button></div><div style="text-align:center;padding:20px;background:var(--bg3);border-radius:var(--r);margin-bottom:14px"><div style="font-size:11px;color:var(--text2);margin-bottom:4px">Total to pay</div><div style="font-family:'Syne',sans-serif;font-size:36px;font-weight:700;color:var(--green)">€7,130.00</div><div style="font-size:11px;color:var(--text2);margin-top:4px">2 creators · Ashley K. + Mia R.</div></div><button class="btn btp" style="width:100%" onclick="processAllPayouts()">Confirm payouts ✓</button></div></div>
+
+<div class="mbg" id="txnm"><div class="mo"><div class="mh"><div class="mt">🔍 Transaction Verification</div><button class="mc" onclick="cm('txnm')">×</button></div><div style="background:var(--gbg);border:1px solid var(--gb);border-radius:var(--r2);padding:14px;margin-bottom:14px"><div style="font-size:11px;font-weight:600;color:var(--green);margin-bottom:8px">✓ Verified on OF Backend</div><div style="font-size:11px;font-family:monospace;color:var(--text2);line-height:1.8">TXN-ID: #TXN-8821-0514<br>Amount: €29.99<br>Type: Subscription<br>Fan: #4821<br>Timestamp: 2025-05-14 08:14:22<br>Hash: a3f7b2c9e1...</div></div><div style="font-size:11px;color:var(--text2)">This transaction was independently verified from the OnlyFans payment backend. The amount matches your Vault record exactly.</div></div></div>
+
+<div class="mbg" id="escalate"><div class="mo"><div class="mh"><div class="mt">⬆ Escalate to Manager</div><button class="mc" onclick="cm('escalate')">×</button></div><div class="fg"><label class="fl">Why are you escalating?</label><textarea class="fi" rows="3" style="resize:none" placeholder="Describe the situation..." id="escDesc"></textarea></div><div style="padding:10px;background:var(--abg);border:1px solid var(--ab);border-radius:var(--r2);font-size:11px;color:var(--amber);margin-bottom:12px">⚠ Your account manager will be notified immediately.</div><button class="btn btp" style="width:100%" onclick="submitEscalation()">Escalate now</button></div></div>
+
+<div class="mbg" id="newcamp"><div class="mo"><div class="mh"><div class="mt">🚀 New Campaign</div><button class="mc" onclick="cm('newcamp')">×</button></div><div class="fg"><label class="fl">Campaign name</label><input class="fi" placeholder="e.g. VIP Weekend Offer"/></div><div class="fg"><label class="fl">Trigger</label><select class="fi"><option>Purchase over €X</option><option>X days inactive</option><option>Subscription expiring</option><option>New subscriber</option></select></div><div class="fg"><label class="fl">Action</label><select class="fi"><option>Send PPV offer</option><option>Send discount code</option><option>Send custom message</option><option>Send exclusive content</option></select></div><div class="fr"><div class="fg"><label class="fl">Trigger value (€ or days)</label><input class="fi" type="number" placeholder="100"/></div><div class="fg"><label class="fl">Discount (%)</label><input class="fi" type="number" placeholder="20"/></div></div><button class="btn btp" style="width:100%" onclick="createCampaign()">Create campaign 🚀</button></div></div>
+
+<div class="mbg" id="newscript"><div class="mo"><div class="mh"><div class="mt">📝 New Script</div><button class="mc" onclick="cm('newscript')">×</button></div><div class="fg"><label class="fl">Script name</label><input class="fi" placeholder="e.g. Whale PPV Offer"/></div><div class="fg"><label class="fl">Category</label><select class="fi"><option>Upsell</option><option>Re-engagement</option><option>Welcome</option><option>Retention</option></select></div><div class="fg"><label class="fl">Script text</label><textarea class="fi" rows="5" style="resize:none" placeholder="Write your DM script here... Use [name] for fan's name, [PRICE] for price..."></textarea></div><button class="btn btp" style="width:100%" onclick="saveScript()">Save script ✦</button></div></div>
+
+<div class="mbg" id="addchatter"><div class="mo"><div class="mh"><div class="mt">+ Add Chatter</div><button class="mc" onclick="cm('addchatter')">×</button></div><div class="fr"><div class="fg"><label class="fl">Name</label><input class="fi" placeholder="John D."/></div><div class="fg"><label class="fl">Email</label><input class="fi" type="email" placeholder="john@example.com"/></div></div><div class="fg"><label class="fl">Assign to creator(s)</label><select class="fi" multiple style="height:80px"><option>Ashley K.</option><option>Mia R.</option><option>Sofia L.</option></select></div><div class="fg"><label class="fl">Commission (%)</label><input class="fi" type="number" placeholder="15" min="1" max="50"/></div><button class="btn btp" style="width:100%" onclick="addChatter()">Add chatter</button></div></div>
+
+<div id="toast"></div>
+<div id="cfWrap" style="position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden"></div>
+<script>
+// ── TRANSLATIONS ──
+const T = {
+  en:{tagline:"The transparent OFM platform — built for creators & agencies",chooseRole:"Choose your role",creator:"Creator",creatorSub:"Transparency · Protection · Growth",manager:"Manager",managerSub:"Analytics · Upsell · Retention",forCreators:"For Creators",forAgencies:"For Agencies",vp1:"See every transaction from OF backend",vp2:"Contract explained in plain language",vp3:"Control what chatters write for you",vp4:"Rate your agency anonymously",vp5:"AI content ideas based on trends",ap1:"Fan Segments · Whale / At-Risk",ap2:"Upsell Engine · auto campaigns",ap3:"Shift Manager · track chatters",ap4:"Revenue Forecast · AI prediction",ap5:"Agency Rating · build creator trust",freePlan:"Free plan · Premium from",agencyFrom:"Agency plans from",agencyPlans:"Agency Plans",uniqueMsg:"✦ The only platform with creator transparency + agency power tools in one"},
+  de:{tagline:"Die transparente OFM-Plattform für Creator & Agenturen",chooseRole:"Wähle deine Rolle",creator:"Creator",creatorSub:"Transparenz · Schutz · Wachstum",manager:"Manager",managerSub:"Analytics · Upsell · Retention",forCreators:"Für Creator",forAgencies:"Für Agenturen",vp1:"Jede Transaktion aus dem OF-Backend sehen",vp2:"Vertrag in einfacher Sprache erklärt",vp3:"Kontrolle über Chatter-Nachrichten",vp4:"Agentur anonym bewerten",vp5:"KI-Ideen basierend auf Trends",ap1:"Fan-Segmente · Whale / At-Risk",ap2:"Upsell-Engine · Auto-Kampagnen",ap3:"Schicht-Manager · Chatter tracken",ap4:"Revenue-Forecast · KI-Prognose",ap5:"Agenturbewertung · Creator-Vertrauen",freePlan:"Kostenlos · Premium ab",agencyFrom:"Agenturen ab",agencyPlans:"Agenturen-Pläne",uniqueMsg:"✦ Die einzige Plattform mit Creator-Transparenz + Agentur-Tools"},
+  fr:{tagline:"La plateforme OFM transparente pour créatrices & agences",chooseRole:"Choisissez votre rôle",creator:"Créatrice",creatorSub:"Transparence · Protection · Croissance",manager:"Manager",managerSub:"Analytics · Upsell · Rétention",forCreators:"Pour les Créatrices",forAgencies:"Pour les Agences",vp1:"Voir chaque transaction depuis OF",vp2:"Contrat expliqué en langage simple",vp3:"Contrôler ce que les chatters écrivent",vp4:"Évaluer anonymement votre agence",vp5:"Idées de contenu IA selon les tendances",ap1:"Fan Segments · Whale / At-Risk",ap2:"Moteur Upsell · Campagnes auto",ap3:"Gestion des équipes · Suivre les chatters",ap4:"Prévision des revenus · IA",ap5:"Notation d'agence · Confiance des créatrices",freePlan:"Gratuit · Premium à partir de",agencyFrom:"Agences à partir de",agencyPlans:"Plans Agence",uniqueMsg:"✦ La seule plateforme combinant transparence créatrice + outils agence"},
+  es:{tagline:"La plataforma OFM transparente para creadoras y agencias",chooseRole:"Elige tu rol",creator:"Creadora",creatorSub:"Transparencia · Protección · Crecimiento",manager:"Manager",managerSub:"Analytics · Upsell · Retención",forCreators:"Para Creadoras",forAgencies:"Para Agencias",vp1:"Ver cada transacción desde el backend de OF",vp2:"Contrato explicado en lenguaje simple",vp3:"Controla lo que escriben los chatters",vp4:"Califica tu agencia de forma anónima",vp5:"Ideas de contenido con IA según tendencias",ap1:"Segmentos de fans · Whale / At-Risk",ap2:"Motor de upsell · Campañas automáticas",ap3:"Gestor de turnos · Seguimiento de chatters",ap4:"Pronóstico de ingresos · IA",ap5:"Calificación de agencia · Confianza de creadoras",freePlan:"Gratis · Premium desde",agencyFrom:"Agencias desde",agencyPlans:"Planes para Agencias",uniqueMsg:"✦ La única plataforma con transparencia para creadoras + herramientas para agencias"},
+  pt:{tagline:"A plataforma OFM transparente para criadores e agências",chooseRole:"Escolha o seu papel",creator:"Criadora",creatorSub:"Transparência · Proteção · Crescimento",manager:"Manager",managerSub:"Analytics · Upsell · Retenção",forCreators:"Para Criadoras",forAgencies:"Para Agências",vp1:"Ver cada transação do backend OF",vp2:"Contrato explicado em linguagem simples",vp3:"Controle o que os chatters escrevem",vp4:"Avalie sua agência anonimamente",vp5:"Ideias de conteúdo com IA baseadas em tendências",ap1:"Segmentos de fãs · Whale / At-Risk",ap2:"Motor de upsell · Campanhas automáticas",ap3:"Gerente de turnos · Rastrear chatters",ap4:"Previsão de receita · IA",ap5:"Avaliação de agência · Confiança das criadoras",freePlan:"Grátis · Premium a partir de",agencyFrom:"Agências a partir de",agencyPlans:"Planos para Agências",uniqueMsg:"✦ A única plataforma com transparência para criadoras + ferramentas para agências"},
+  it:{tagline:"La piattaforma OFM trasparente per creator e agenzie",chooseRole:"Scegli il tuo ruolo",creator:"Creator",creatorSub:"Trasparenza · Protezione · Crescita",manager:"Manager",managerSub:"Analytics · Upsell · Retention",forCreators:"Per Creator",forAgencies:"Per Agenzie",vp1:"Vedi ogni transazione dal backend OF",vp2:"Contratto spiegato in linguaggio semplice",vp3:"Controlla cosa scrivono i chatter",vp4:"Valuta la tua agenzia in modo anonimo",vp5:"Idee di contenuto AI basate sui trend",ap1:"Segmenti fan · Whale / At-Risk",ap2:"Motore Upsell · Campagne automatiche",ap3:"Gestione turni · Traccia i chatter",ap4:"Previsione ricavi · AI",ap5:"Valutazione agenzia · Fiducia delle creator",freePlan:"Gratis · Premium da",agencyFrom:"Agenzie da",agencyPlans:"Piani Agenzia",uniqueMsg:"✦ L'unica piattaforma con trasparenza per creator + strumenti per agenzie"}
+};
+let curLang='en';
+function setLang(l){
+  curLang=l;
+  document.querySelectorAll('.lbtn').forEach(b=>b.classList.toggle('active',b.textContent.trim().includes(l==='en'?'En':l==='de'?'De':l==='fr'?'Fr':l==='es'?'Es':l==='pt'?'Po':l==='it'?'It':'')));
+  document.querySelectorAll('[data-t]').forEach(el=>{const k=el.getAttribute('data-t');if(T[l]&&T[l][k])el.textContent=T[l][k];});
+  const sel=document.getElementById('langSelect');if(sel)sel.value=l;
+}
+function setLangSb(l){setLang(l);}
+
+// ── LIVE FEED ──
+const liveTx=[{t:'Subscription',c:'var(--accent)',a:[9.99,14.99,19.99,29.99]},{t:'PPV Message',c:'var(--green)',a:[5.00,10.00,15.00,20.00,25.00]},{t:'Tip',c:'var(--blue)',a:[5.00,10.00,20.00,50.00,100.00]},{t:'Custom content',c:'var(--amber)',a:[30.00,50.00,75.00,100.00]}];
+let lT=284,lS=85,lC=19;
+function addLiveWidget(){
+  const list=document.getElementById('lw');if(!list)return;
+  const t=liveTx[Math.floor(Math.random()*liveTx.length)];
+  const a=t.a[Math.floor(Math.random()*t.a.length)];
+  const fan=Math.floor(Math.random()*9000)+1000;
+  const now=new Date();
+  const time=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+  lT=parseFloat((lT+a).toFixed(2));lS=parseFloat((lT*.3).toFixed(2));lC++;
+  const el=document.createElement('div');
+  el.style.cssText=`display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:var(--bg3);border-radius:var(--r2);font-size:11px;border-left:3px solid ${t.c};animation:sli .25s ease`;
+  el.innerHTML=`<div><span>${t.t}</span> <span style="color:var(--text2);font-size:9px">Fan #${fan} · ${time}</span></div><b style="color:var(--green);font-family:'Syne',sans-serif">+€${a.toFixed(2)}</b>`;
+  list.insertBefore(el,list.firstChild);
+  while(list.children.length>3)list.removeChild(list.lastChild);
+  const lt=document.getElementById('lt2');if(lt)lt.textContent='€'+lT.toFixed(2);
+  const ls=document.getElementById('ls2');if(ls)ls.textContent='€'+lS.toFixed(2);
+  const lc=document.getElementById('lc2');if(lc)lc.textContent=lC;
+}
+setInterval(addLiveWidget,4000);
+
+// ── CORE UI ──
+function login(r){
+  document.getElementById('login').style.display='none';
+  document.getElementById('app').style.display='block';
+  if(r==='creator'){
+    document.getElementById('uav').textContent='A';
+    document.getElementById('uname').textContent='Ashley K.';
+    document.getElementById('utag').textContent='Creator';
+    document.getElementById('utier').textContent='Rising ✦';
+    document.getElementById('utier').style.color='var(--accent)';
+    document.getElementById('nav-c').style.display='block';
+    document.getElementById('nav-m').style.display='none';
+    sv('dash');
+  } else {
+    document.getElementById('uav').textContent='M';
+    document.getElementById('uname').textContent='Vault Agency';
+    document.getElementById('utag').textContent='Manager';
+    document.getElementById('utier').textContent='Agency ◈';
+    document.getElementById('utier').style.color='var(--blue)';
+    document.getElementById('nav-c').style.display='none';
+    document.getElementById('nav-m').style.display='block';
+    sv('mgr');
+  }
+}
+function logout(){
+  document.getElementById('app').style.display='none';
+  document.getElementById('login').style.display='flex';
+}
+function sv(n){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(i=>i.classList.remove('active'));
+  const v=document.getElementById('view-'+n);if(v)v.classList.add('active');
+  if(event&&event.currentTarget&&event.currentTarget.classList)event.currentTarget.classList.add('active');
+  if(window.innerWidth<768)closeSb();
+}
+function toggleSb(){document.getElementById('sb').classList.toggle('open');document.getElementById('ov').classList.toggle('open');}
+function closeSb(){document.getElementById('sb').classList.remove('open');document.getElementById('ov').classList.remove('open');}
+function om(id){document.getElementById(id).classList.add('open');}
+function cm(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.mbg').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+function openNotif(){document.getElementById('npanel').classList.add('open');document.getElementById('novl').classList.add('open');}
+function closeNotif(){document.getElementById('npanel').classList.remove('open');document.getElementById('novl').classList.remove('open');document.getElementById('nBadge').style.display='none';}
+function markAllRead(){document.querySelectorAll('.npi').forEach(n=>{n.style.borderLeft='3px solid var(--border)'});closeNotif();showToast('✓ All notifications read');}
+
+// ── TOAST & CONFETTI ──
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.style.opacity='1';t.style.transform='translateY(0)';
+  clearTimeout(t._t);t._t=setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(8px)';},2800);
+}
+function boom(){
+  const w=document.getElementById('cfWrap');
+  const cols=['#8b5cf6','#3b82f6','#10b981','#f59e0b','#ec4899','#f97316'];
+  for(let i=0;i<60;i++){
+    const c=document.createElement('div');c.className='cf';
+    c.style.cssText=`left:${Math.random()*100}%;top:-10px;background:${cols[Math.floor(Math.random()*cols.length)]};animation-duration:${1.2+Math.random()*1.4}s;animation-delay:${Math.random()*.5}s;transform:rotate(${Math.random()*360}deg)`;
+    w.appendChild(c);setTimeout(()=>c.remove(),3000);
+  }
+}
+
+// ── WELLBEING ──
+let darkOn=false;
+function ciW(btn,e){
+  document.querySelectorAll('#view-dash .btn.btg.btsm').forEach(b=>{b.style.borderColor='';b.style.background='';});
+  btn.style.borderColor='var(--accent2)';btn.style.background='rgba(139,92,246,0.1)';
+  const te=document.getElementById('todaye');if(te)te.textContent=e;
+  const msgs={'😊':'✦ Great! You\'re in top form today.','😐':'◯ An OK day – that\'s fine too.','😔':'△ Feeling tired? Consider Dark Day mode.','😤':'⬡ Stress is real. A short break helps.'};
+  const cm2=document.getElementById('cimsg');if(cm2)cm2.textContent=msgs[e]||'';
+  showToast('🧘 Check-in saved');
+}
+function toggleDark(){
+  darkOn=!darkOn;
+  const b=document.getElementById('ddbtn');
+  if(b){b.textContent=darkOn?'🌙 Dark Day active – click to deactivate':'🌙 Dark Day mode';b.style.borderColor=darkOn?'var(--amber)':'';b.style.color=darkOn?'var(--amber)':'';}
+  showToast(darkOn?'🌙 Dark Day activated – rest well':'☀️ Dark Day deactivated');
+}
+
+// ── BOUNDARIES ──
+let bndType='ok';
+function setBnd(t){
+  bndType=t;
+  const ok=document.getElementById('bok'),no=document.getElementById('bno');
+  if(!ok||!no)return;
+  if(t==='ok'){ok.style.background='var(--gbg)';ok.style.borderColor='var(--gb)';ok.style.color='var(--green)';no.style.background='var(--bg3)';no.style.borderColor='var(--border)';no.style.color='var(--text2)';}
+  else{no.style.background='var(--rbg)';no.style.borderColor='var(--rb)';no.style.color='var(--red)';ok.style.background='var(--bg3)';ok.style.borderColor='var(--border)';ok.style.color='var(--text2)';}
+}
+function saveBnd(){
+  const txt=document.getElementById('binp');if(!txt||!txt.value.trim())return;
+  const list=document.getElementById(bndType==='ok'?'al':'bl');
+  const d=document.createElement('div');d.className='bd '+(bndType==='ok'?'ok':'no');
+  d.innerHTML=`<div>✦ ${txt.value.trim()}</div><span class="${bndType==='ok'?'bdo':'bdn'}">${bndType==='ok'?'OK':'STOP'}</span>`;
+  list.appendChild(d);txt.value='';cm('bndm');showToast('🛡️ Rule saved');
+}
+function setTone(tone){
+  ['playful','dominant','sweet'].forEach(t=>{
+    const el=document.getElementById('tone-'+t);
+    if(!el)return;
+    if(t===tone){el.style.opacity='1';el.style.borderColor='rgba(16,185,129,0.3)';el.querySelector('div:last-child').textContent='● Active';el.querySelector('div:last-child').style.color='var(--green)';}
+    else{el.style.opacity='0.4';el.style.borderColor='';el.querySelector('div:last-child').textContent='○ Off';el.querySelector('div:last-child').style.color='var(--text2)';}
+  });
+  showToast(`✓ Tone set to ${tone.charAt(0).toUpperCase()+tone.slice(1)}`);
+}
+
+// ── CHATTER LOG ──
+function flagAct(id,a){
+  const item=document.getElementById(id);if(!item)return;
+  item.classList.remove('flag');
+  if(a==='r'){item.style.borderLeftColor='var(--red)';item.classList.add('resolved');showToast('🚨 Reported to Vault team');}
+  else{item.style.borderLeftColor='var(--green)';item.classList.add('resolved');showToast('✓ Marked as OK');}
+  item.querySelectorAll('button').forEach(b=>b.disabled=true);
+}
+function filterLog(type){showToast(type==='flagged'?'⚠ Showing flagged messages':'Showing all messages');}
+
+// ── EARNINGS PROOF ──
+// txnm modal opened via om('txnm')
+
+// ── AGENCY RATING ──
+function setStars(cat,val){
+  const container=document.getElementById('stars'+cat);if(!container)return;
+  container.querySelectorAll('.star').forEach((s,i)=>{s.classList.toggle('active',i<val);});
+}
+function submitRating(){
+  const comment=document.getElementById('ratingComment');
+  if(comment)comment.value='';
+  cm('rating');
+  showToast('⭐ Rating submitted anonymously! Thank you.');
+  setTimeout(()=>boom(),200);
+}
+
+// ── CREATOR PROTECTION ──
+function emergencyFreeze(){
+  if(confirm('⚠ Are you sure? This will immediately stop all chatter activity on your account.')){
+    showToast('🛑 Emergency freeze activated – chatters stopped');
+  }
+}
+function genTermination(){
+  showToast('📋 Termination document generated – check your email');
+}
+let exitDone=0;
+function toggleExit(row){
+  const dot=row.querySelector('.wnum');if(!dot)return;
+  const done=dot.classList.contains('done');
+  if(done){dot.classList.remove('done');row.style.background='';row.style.borderColor='';}
+  else{dot.classList.add('done');dot.textContent='✓';row.style.background='var(--gbg)';row.style.borderColor='var(--gb)';showToast('✓ Step completed');}
+}
+
+// ── MY FUTURE ──
+let challDone=false,earnedBadges=8;
+function doChallenge(btn){
+  if(challDone)return;challDone=true;
+  btn.textContent='✓ Done!';btn.style.background='var(--gbg)';btn.style.border='1px solid var(--gb)';btn.style.color='var(--green)';btn.disabled=true;
+  const bar=document.getElementById('challBar');if(bar)bar.style.width='100%';
+  const prog=document.getElementById('challProg');if(prog)prog.textContent='5/5 ✓';
+  const cs=document.getElementById('challScore');if(cs)cs.textContent='9/10';
+  setTimeout(()=>{
+    earnedBadges++;
+    const bs=document.getElementById('badgeScore');if(bs)bs.textContent=earnedBadges+'/15';
+    const bl=document.getElementById('badgeLbl');if(bl)bl.textContent=earnedBadges+' of 15';
+    const b8=document.getElementById('badge8');if(b8){b8.classList.remove('locked');b8.classList.add('earned','new-earn');}
+    boom();showToast('🎯 Badge unlocked! +50 Vault points');
+  },600);
+}
+function pickFund(el,name){
+  document.querySelectorAll('.fundopt').forEach(f=>{f.style.background='var(--bg3)';f.style.borderColor='var(--border)';const l=f.querySelector('div:last-child');if(l)l.style.color='var(--text2)';});
+  el.style.background='rgba(16,185,129,0.08)';el.style.borderColor='var(--gb)';
+  const l=el.querySelector('div:last-child');if(l)l.style.color='var(--green)';
+  showToast(`✦ Goal set: ${name}`);
+}
+function saveGoal(){
+  const v=document.getElementById('goalVal');const w=document.getElementById('goalWhy');
+  if(!v||!v.value){showToast('⚠ Please enter a target amount');return;}
+  cm('goalm');showToast('✦ Goal saved! You\'ve got this 💜');
+}
+
+// ── REVENUE ──
+function stab(tabEl,showId){
+  if(tabEl){document.querySelectorAll('.tabs .tab').forEach(t=>t.classList.remove('active'));tabEl.classList.add('active');}
+  if(showId){['revOverview','revHistory','revReports','scriptAll','scriptUpsell','scriptReeng','scriptWelc'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});const show=document.getElementById(showId);if(show)show.style.display='block';}
+}
+function filterRev(f){showToast('Filter: '+f);}
+function exportCSV(){showToast('📊 CSV downloading...');}
+
+// ── CONTENT INSPIRATION ──
+function genIdeas(){
+  const ts=document.getElementById('ideasTs');if(ts)ts.textContent='generated just now ✦';
+  showToast('💡 New ideas generated!');
+}
+function addToPlan(trend){showToast(`✦ "${trend}" added to your content plan!`);}
+
+// ── PPV OPTIMIZER ──
+function applyPPV(){showToast('✦ PPV price recommendations applied! €20.00–€25.00');}
+
+// ── CONTRACT ──
+function sendContact(){
+  cm('contactm');showToast('✉ Message sent to Michael V.');
+}
+function submitDispute(){
+  const t=document.getElementById('dispType');const d=document.getElementById('dispDesc');
+  if(!d||!d.value.trim()){showToast('⚠ Please describe the issue');return;}
+  cm('dispm');showToast('✓ Report submitted anonymously');
+}
+
+// ── MANAGER FUNCTIONS ──
+function addCreator(){
+  const n=document.getElementById('newName');const u=document.getElementById('newUser');
+  if(!n||!n.value.trim()){showToast('⚠ Please enter creator name');return;}
+  cm('addm');showToast(`✦ Creator ${n.value} added!`);
+}
+function addChatter(){cm('addchatter');showToast('✓ Chatter added and assigned');}
+function doPayout(btn,name){
+  btn.textContent='✓ Paid';
+  btn.style.cssText='padding:5px 11px;font-size:11px;background:var(--gbg);border:1px solid var(--gb);color:var(--green);border-radius:var(--r2);cursor:default;font-family:Inter,sans-serif';
+  btn.disabled=true;showToast(`💸 Payout sent to ${name}`);
+}
+function processAllPayouts(){cm('paym');showToast('💸 All payouts processed – €7,130.00 sent');boom();}
+function toggleOnb(row){
+  const dot=row.querySelector('div div:first-child');if(!dot)return;
+  const done=dot.textContent==='✓';
+  if(done){row.style.background='var(--bg3)';row.style.borderColor='var(--border)';dot.textContent='○';dot.style.background='var(--bg3)';dot.style.border='2px solid var(--border)';dot.style.color='var(--text2)';}
+  else{row.style.background='var(--gbg)';row.style.borderColor='var(--gb)';dot.textContent='✓';dot.style.background='var(--green)';dot.style.border='none';dot.style.color='white';showToast('✓ Step completed');}
+}
+function filterCreators(q){
+  document.querySelectorAll('#crBody tr').forEach(r=>{
+    r.style.display=(r.dataset.name&&r.dataset.name.includes(q.toLowerCase()))||q===''?'':'none';
+  });
+}
+function filterCrTab(tabEl,status){
+  document.querySelectorAll('.tabs .tab').forEach(t=>t.classList.remove('active'));tabEl.classList.add('active');
+  document.querySelectorAll('#crBody tr').forEach(r=>{
+    r.style.display=(status==='all'||r.dataset.status===status)?'':'none';
+  });
+}
+function viewCreator(name){showToast(`👁 Opening profile: ${name.charAt(0).toUpperCase()+name.slice(1)}`);}
+function viewChatter(name){showToast(`👁 Opening chatter profile: ${name.charAt(0).toUpperCase()+name.slice(1)}`);}
+function sendWhale(id){showToast(`📨 Personalized message sent to Fan #${id}`);}
+function reengageFan(id){showToast(`🔄 Re-engagement campaign launched for Fan #${id}`);}
+function editCampaign(name){showToast(`⚙ Editing ${name} campaign...`);om('newcamp');}
+function pauseCampaign(name){showToast(`⏸ Campaign paused: ${name}`);}
+function launchCampaign(name){showToast(`🚀 Campaign launched: ${name}!`);}
+function activateAll(){showToast('🚀 All campaigns activated!');boom();}
+function createCampaign(){cm('newcamp');showToast('🚀 New campaign created!');}
+function startShift(){showToast('🕐 Shift started');}
+function endShift(name){showToast(`✓ Shift ended for ${name.charAt(0).toUpperCase()+name.slice(1)}`);}
+function copyScript(type){
+  const scripts={ppv:'Hey [name] 💜 I just created something really special...',reeng:'I missed you [name]! 🥺',welcome:'Hey [name]! Welcome to my world 💜'};
+  if(navigator.clipboard){navigator.clipboard.writeText(scripts[type]||'').then(()=>showToast('📋 Script copied!'));}
+  else{showToast('📋 Script copied!');}
+}
+function useScript(type){showToast(`✓ Script "${type}" sent to all active chatters`);}
+function saveScript(){cm('newscript');showToast('📝 Script saved to library');}
+function submitEscalation(){
+  const d=document.getElementById('escDesc');
+  if(!d||!d.value.trim()){showToast('⚠ Please describe the situation');return;}
+  cm('escalate');showToast('⬆ Escalated to account manager');
+}
+
+// ── VAULT AI (real Anthropic API) ──
+const VAULT_CONTEXT=`You are Vault AI, an assistant for the Vault OFM platform. You communicate in the user's language (default English, but match whatever language the user writes in).
+You know this creator's data (Ashley K.):
+- Monthly earnings: €3,840.00 (30% share of €12,800.00 total agency revenue)
+- Vault Score: 742/1000, tier Rising ✦ (258 pts to Established)
+- Subscribers: 1,247 (+89 this week)
+- PPV Conversion rate: 34% (niche avg 30%)
+- Contract: Fair Contract Score 9.20/10, 30% share, payouts 2× monthly (1st and 15th)
+- Next payout: May 15, 2025 – €960.00
+- Trend Pulse: Nurse Roleplay +84% on Reddit, POV Voice +62%, Outfit Challenge +38%
+- PPV Optimizer: current avg price €17.50, recommended €20.00-€25.00, potential +€680.00/mo
+- Freedom Fund goal: €50,000.00, saved €8,400.00 (17%), target Dec 2026
+- Weekly challenge: Send PPV for €25.00+ (3/5 days completed)
+- Best posting time: 21:00-22:30
+Answer concisely with concrete numbers. Use emojis where appropriate. Always use € symbol with 2 decimal places for amounts.`;
+
+async function sendAI(){
+  const inp=document.getElementById('aiinput');
+  const msgs=document.getElementById('aimsgs');
+  const sendBtn=document.getElementById('aiSendBtn');
+  const errDiv=document.getElementById('aiErr');
+  if(!inp||!msgs)return;
+  const txt=inp.value.trim();if(!txt)return;
+  const um=document.createElement('div');um.style.cssText='display:flex;justify-content:flex-end';
+  um.innerHTML=`<div style="background:var(--accent2);border-radius:10px 10px 3px 10px;padding:9px 13px;font-size:12px;max-width:78%;color:white;line-height:1.5">${txt.replace(/</g,'&lt;')}</div>`;
+  msgs.appendChild(um);inp.value='';msgs.scrollTop=msgs.scrollHeight;
+  if(errDiv)errDiv.style.display='none';
+  if(sendBtn){sendBtn.disabled=true;sendBtn.textContent='...';}
+  const typing=document.createElement('div');typing.style.cssText='display:flex;gap:8px;align-items:flex-start';
+  typing.innerHTML=`<div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent3),var(--blue));display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0">🤖</div><div style="background:var(--bg3);border-radius:10px 10px 10px 3px;padding:10px 14px" class="tdot"><span></span><span></span><span></span></div>`;
+  msgs.appendChild(typing);msgs.scrollTop=msgs.scrollHeight;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:VAULT_CONTEXT,messages:[{role:'user',content:txt}]})});
+    const data=await res.json();
+    typing.remove();
+    if(data.error){if(errDiv){errDiv.textContent='⚠ '+data.error.message;errDiv.style.display='block';}}
+    else{
+      const reply=data.content&&data.content[0]&&data.content[0].text?data.content[0].text:'Sorry, no response received.';
+      const am=document.createElement('div');am.style.cssText='display:flex;gap:8px;align-items:flex-start';
+      am.innerHTML=`<div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent3),var(--blue));display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0">🤖</div><div style="background:var(--bg3);border-radius:10px 10px 10px 3px;padding:10px 14px;font-size:12px;line-height:1.7;max-width:84%;white-space:pre-wrap">${reply}</div>`;
+      msgs.appendChild(am);msgs.scrollTop=msgs.scrollHeight;
+    }
+  }catch(err){
+    typing.remove();
+    if(errDiv){errDiv.textContent='⚠ Connection error: '+err.message;errDiv.style.display='block';}
+  }
+  if(sendBtn){sendBtn.disabled=false;sendBtn.textContent='→';}
+}
+function askAI(t){const i=document.getElementById('aiinput');if(i){i.value=t;sendAI();}sv('ai');}
+
+// ── TREND "USE" BUTTONS ──
+function addToPlanTrend(name){showToast(`✦ "${name}" added to plan!`);}
+
+// ── ANIMATIONS CSS ──
+const styleTag=document.createElement('style');
+styleTag.textContent=`
+@keyframes sli{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes cffall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+@keyframes tdot{0%,80%,100%{transform:scale(0);opacity:0.3}40%{transform:scale(1);opacity:1}}
+.tdot span{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--text2);margin:0 2px;animation:tdot 1.2s infinite}
+.tdot span:nth-child(2){animation-delay:.2s}
+.tdot span:nth-child(3){animation-delay:.4s}
+#toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:10px 16px;font-size:12px;font-weight:500;z-index:9999;opacity:0;transform:translateY(8px);transition:all .25s;pointer-events:none;max-width:300px}
+`;
+document.head.appendChild(styleTag);
+</script>
+</body>
+</html>
